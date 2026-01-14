@@ -1,0 +1,833 @@
+// Siyoon's 2026 Winter Vacation Manager
+// Main Application JavaScript
+
+(function() {
+    'use strict';
+
+    // ===== Configuration =====
+    const CONFIG = {
+        startDate: new Date(2026, 0, 1),
+        endDate: new Date(2026, 1, 28),
+        storageKey: 'siyoon-vacation-data-v2'
+    };
+
+    // ===== Channel Definitions =====
+    const CHANNELS = {
+        schedule: {
+            id: 'schedule',
+            name: '방학 일정',
+            screen: 'scheduleScreen',
+            calendar: 'scheduleCalendar',
+            category: 'schedule',
+            categoryName: '일정',
+            fields: [
+                { name: 'title', label: '일정 제목', type: 'text', required: true },
+                { name: 'content', label: '일정 내용', type: 'textarea', required: false }
+            ]
+        },
+        'study-basic': {
+            id: 'study-basic',
+            name: '기초학력 진단평가',
+            screen: 'studyBasicScreen',
+            calendar: 'studyBasicCalendar',
+            category: 'study',
+            categoryName: '진단평가',
+            fields: [
+                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'score', label: '점수', type: 'text', required: false },
+                { name: 'content', label: '메모', type: 'textarea', required: false }
+            ]
+        },
+        'study-math': {
+            id: 'study-math',
+            name: '만점왕 수학(6-1)',
+            screen: 'studyMathScreen',
+            calendar: 'studyMathCalendar',
+            category: 'study',
+            categoryName: '수학',
+            fields: [
+                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'score', label: '점수', type: 'text', required: false },
+                { name: 'content', label: '메모', type: 'textarea', required: false }
+            ]
+        },
+        'study-calc': {
+            id: 'study-calc',
+            name: '기적의 계산법',
+            screen: 'studyCalcScreen',
+            calendar: 'studyCalcCalendar',
+            category: 'study',
+            categoryName: '계산법',
+            fields: [
+                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'score', label: '점수', type: 'text', required: false },
+                { name: 'content', label: '메모', type: 'textarea', required: false }
+            ]
+        },
+        'study-english': {
+            id: 'study-english',
+            name: '초등영문법 3800제',
+            screen: 'studyEnglishScreen',
+            calendar: 'studyEnglishCalendar',
+            category: 'study',
+            categoryName: '영문법',
+            fields: [
+                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'score', label: '점수', type: 'text', required: false },
+                { name: 'content', label: '메모', type: 'textarea', required: false }
+            ]
+        },
+        'study-elihi': {
+            id: 'study-elihi',
+            name: '엘리하이',
+            screen: 'studyEliHiScreen',
+            calendar: 'studyEliHiCalendar',
+            category: 'study',
+            categoryName: '엘리하이',
+            fields: [
+                { name: 'subject', label: '공부한 내용', type: 'text', required: false },
+                { name: 'score', label: '점수', type: 'text', required: false },
+                { name: 'content', label: '메모', type: 'textarea', required: false }
+            ]
+        },
+        game: {
+            id: 'game',
+            name: '게임 정복기',
+            screen: 'gameScreen',
+            calendar: 'gameCalendar',
+            category: 'game',
+            categoryName: '게임',
+            fields: [
+                { name: 'gameName', label: '게임 이름', type: 'text', required: false },
+                { name: 'content', label: '게임 소감', type: 'textarea', required: false }
+            ]
+        },
+        reading: {
+            id: 'reading',
+            name: '1일 1독서',
+            screen: 'readingScreen',
+            calendar: 'readingCalendar',
+            category: 'reading',
+            categoryName: '독서',
+            fields: [
+                { name: 'bookTitle', label: '책 제목', type: 'text', required: false },
+                { name: 'pages', label: '읽은 페이지', type: 'text', required: false },
+                { name: 'content', label: '독서 내용/소감', type: 'textarea', required: false }
+            ]
+        },
+        kindness: {
+            id: 'kindness',
+            name: '1일 1선행',
+            screen: 'kindnessScreen',
+            calendar: 'kindnessCalendar',
+            category: 'kindness',
+            categoryName: '선행',
+            fields: [
+                { name: 'content', label: '오늘 한 선행', type: 'textarea', required: false }
+            ]
+        },
+        phone: {
+            id: 'phone',
+            name: '스마트폰 사용시간',
+            screen: 'phoneScreen',
+            calendar: 'phoneCalendar',
+            category: 'phone',
+            categoryName: '스마트폰',
+            fields: [
+                { name: 'duration', label: '사용 시간 (예: 2시간 30분)', type: 'text', required: false },
+                { name: 'content', label: '메모', type: 'textarea', required: false }
+            ]
+        },
+        special: {
+            id: 'special',
+            name: '특별한 일정',
+            screen: 'specialScreen',
+            calendar: 'specialCalendar',
+            category: 'special',
+            categoryName: '특별',
+            fields: [
+                { name: 'title', label: '일정 제목', type: 'text', required: false },
+                { name: 'content', label: '일정 내용', type: 'textarea', required: false }
+            ]
+        }
+    };
+
+    // ===== State Management =====
+    let state = {
+        currentScreen: 'home',
+        currentChannel: null,
+        currentMonth: 0,
+        selectedDate: null,
+        editingEntryId: null,
+        data: {}
+    };
+
+    // ===== DOM Elements =====
+    const elements = {
+        appHeader: document.getElementById('appHeader'),
+        appMain: document.getElementById('appMain'),
+        homeScreen: document.getElementById('homeScreen'),
+        modalOverlay: document.getElementById('modalOverlay'),
+        entryModal: document.getElementById('entryModal'),
+        modalTitle: document.getElementById('modalTitle'),
+        modalBody: document.getElementById('modalBody'),
+        modalClose: document.getElementById('modalClose'),
+        btnSave: document.getElementById('btnSave'),
+        btnDelete: document.getElementById('btnDelete')
+    };
+
+    // ===== Data Management =====
+    function loadData() {
+        try {
+            const saved = localStorage.getItem(CONFIG.storageKey);
+            if (saved) {
+                state.data = JSON.parse(saved);
+            }
+        } catch (e) {
+            console.error('Failed to load data:', e);
+            state.data = {};
+        }
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.data));
+        } catch (e) {
+            console.error('Failed to save data:', e);
+        }
+    }
+
+    function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Get all entries for a channel on a specific date
+    function getEntries(channelId, date) {
+        const key = `${channelId}-${date}`;
+        return state.data[key] || [];
+    }
+
+    // Add a new entry
+    function addEntry(channelId, date, entry) {
+        const key = `${channelId}-${date}`;
+        if (!state.data[key]) {
+            state.data[key] = [];
+        }
+        const newEntry = {
+            ...entry,
+            id: generateId(),
+            createdAt: new Date().toISOString()
+        };
+        state.data[key].push(newEntry);
+        saveData();
+        return newEntry;
+    }
+
+    // Update an existing entry
+    function updateEntry(channelId, date, entryId, entry) {
+        const key = `${channelId}-${date}`;
+        if (state.data[key]) {
+            const index = state.data[key].findIndex(e => e.id === entryId);
+            if (index !== -1) {
+                state.data[key][index] = {
+                    ...state.data[key][index],
+                    ...entry,
+                    updatedAt: new Date().toISOString()
+                };
+                saveData();
+            }
+        }
+    }
+
+    // Delete an entry
+    function deleteEntry(channelId, date, entryId) {
+        const key = `${channelId}-${date}`;
+        if (state.data[key]) {
+            state.data[key] = state.data[key].filter(e => e.id !== entryId);
+            if (state.data[key].length === 0) {
+                delete state.data[key];
+            }
+            saveData();
+        }
+    }
+
+    // Get all entries for a date across all channels (for schedule view)
+    function getAllEntriesForDate(date) {
+        const entries = [];
+        Object.keys(CHANNELS).forEach(channelId => {
+            const channelEntries = getEntries(channelId, date);
+            channelEntries.forEach(entry => {
+                entries.push({
+                    ...entry,
+                    channelId,
+                    channel: CHANNELS[channelId]
+                });
+            });
+        });
+        return entries;
+    }
+
+    // Check if a date has any entries
+    function hasEntriesForDate(date) {
+        return Object.keys(CHANNELS).some(channelId => {
+            const entries = getEntries(channelId, date);
+            return entries && entries.length > 0;
+        });
+    }
+
+    // ===== Navigation =====
+    function showScreen(screenName) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+
+        let screenId;
+        if (screenName === 'home') {
+            screenId = 'homeScreen';
+            state.currentChannel = null;
+        } else if (screenName === 'study') {
+            screenId = 'studyScreen';
+            state.currentChannel = null;
+        } else if (CHANNELS[screenName]) {
+            screenId = CHANNELS[screenName].screen;
+            state.currentChannel = screenName;
+            setTimeout(() => initCalendar(screenName), 0);
+        }
+
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            state.currentScreen = screenName;
+        }
+    }
+
+    function goHome() {
+        showScreen('home');
+        state.currentMonth = 0;
+    }
+
+    // ===== Calendar Rendering =====
+    function initCalendar(channelId) {
+        const channel = CHANNELS[channelId];
+        if (!channel) return;
+
+        const container = document.getElementById(channel.calendar);
+        if (!container) return;
+
+        if (channelId === 'schedule') {
+            renderFullCalendar(container);
+        } else {
+            renderSingleCalendar(container, channelId, state.currentMonth);
+        }
+    }
+
+    // Render full two-month calendar for schedule view
+    function renderFullCalendar(container) {
+        let html = '<div class="calendar-full">';
+
+        // January
+        html += renderMonthCalendar(0, true);
+
+        // February
+        html += renderMonthCalendar(1, true);
+
+        html += '</div>';
+
+        // Legend
+        html += `
+            <div class="calendar-legend">
+                <div class="legend-item"><div class="legend-color schedule"></div>일정</div>
+                <div class="legend-item"><div class="legend-color study"></div>학습</div>
+                <div class="legend-item"><div class="legend-color game"></div>게임</div>
+                <div class="legend-item"><div class="legend-color reading"></div>독서</div>
+                <div class="legend-item"><div class="legend-color kindness"></div>선행</div>
+                <div class="legend-item"><div class="legend-color phone"></div>스마트폰</div>
+                <div class="legend-item"><div class="legend-color special"></div>특별</div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+
+        // Add click events
+        container.querySelectorAll('.calendar-day:not(.empty)').forEach(dayEl => {
+            dayEl.addEventListener('click', () => {
+                const date = dayEl.dataset.date;
+                openScheduleModal(date);
+            });
+        });
+    }
+
+    function renderMonthCalendar(monthOffset, isFullView) {
+        const year = 2026;
+        const month = monthOffset;
+        const today = new Date();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDayOfWeek = firstDay.getDay();
+        const daysInMonth = lastDay.getDate();
+
+        const monthNames = ['2026년 1월', '2026년 2월'];
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+        let html = `
+            <div class="calendar-month">
+                <div class="calendar-header">
+                    <span class="calendar-month-year">${monthNames[monthOffset]}</span>
+                </div>
+                <div class="calendar-weekdays">
+                    ${weekdays.map(day => `<div class="calendar-weekday">${day}</div>`).join('')}
+                </div>
+                <div class="calendar-days">
+        `;
+
+        for (let i = 0; i < startDayOfWeek; i++) {
+            html += '<div class="calendar-day empty"></div>';
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayOfWeek = (startDayOfWeek + day - 1) % 7;
+            const isToday = today.getFullYear() === year &&
+                           today.getMonth() === month &&
+                           today.getDate() === day;
+
+            const allEntries = getAllEntriesForDate(dateStr);
+            const hasEntry = allEntries.length > 0;
+
+            let classes = ['calendar-day'];
+            if (isToday) classes.push('today');
+            if (hasEntry) classes.push('has-entry');
+            if (dayOfWeek === 0) classes.push('sunday');
+            if (dayOfWeek === 6) classes.push('saturday');
+
+            // Build entry tags - show ALL entries
+            let entriesHtml = '<div class="day-entries">';
+
+            allEntries.forEach(entry => {
+                const label = getEntryLabel(entry);
+                entriesHtml += `<div class="entry-tag ${entry.channel.category}">${label}</div>`;
+            });
+
+            entriesHtml += '</div>';
+
+            html += `
+                <div class="${classes.join(' ')}" data-date="${dateStr}">
+                    <span class="day-number">${day}</span>
+                    ${entriesHtml}
+                </div>
+            `;
+        }
+
+        html += '</div></div>';
+        return html;
+    }
+
+    // Render single month calendar for other channels
+    function renderSingleCalendar(container, channelId, monthOffset) {
+        const channel = CHANNELS[channelId];
+        const year = 2026;
+        const month = monthOffset;
+        const today = new Date();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDayOfWeek = firstDay.getDay();
+        const daysInMonth = lastDay.getDate();
+
+        const monthNames = ['2026년 1월', '2026년 2월'];
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+        let html = `
+            <div class="calendar-header">
+                <button class="calendar-nav-btn" id="calPrev" ${monthOffset === 0 ? 'disabled' : ''}>‹</button>
+                <span class="calendar-month-year">${monthNames[monthOffset]}</span>
+                <button class="calendar-nav-btn" id="calNext" ${monthOffset === 1 ? 'disabled' : ''}>›</button>
+            </div>
+            <div class="calendar-weekdays">
+                ${weekdays.map(day => `<div class="calendar-weekday">${day}</div>`).join('')}
+            </div>
+            <div class="calendar-days">
+        `;
+
+        for (let i = 0; i < startDayOfWeek; i++) {
+            html += '<div class="calendar-day empty"></div>';
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayOfWeek = (startDayOfWeek + day - 1) % 7;
+            const isToday = today.getFullYear() === year &&
+                           today.getMonth() === month &&
+                           today.getDate() === day;
+
+            const entries = getEntries(channelId, dateStr);
+            const hasEntry = entries.length > 0;
+
+            let classes = ['calendar-day'];
+            if (isToday) classes.push('today');
+            if (hasEntry) classes.push('has-entry');
+            if (dayOfWeek === 0) classes.push('sunday');
+            if (dayOfWeek === 6) classes.push('saturday');
+
+            let entriesHtml = '<div class="day-entries">';
+            const maxDisplay = 3;
+            const displayEntries = entries.slice(0, maxDisplay);
+
+            displayEntries.forEach(entry => {
+                const label = getEntryLabel({ ...entry, channel });
+                entriesHtml += `<div class="entry-tag ${channel.category}">${label}</div>`;
+            });
+
+            if (entries.length > maxDisplay) {
+                entriesHtml += `<div class="entry-more">+${entries.length - maxDisplay}개</div>`;
+            }
+            entriesHtml += '</div>';
+
+            html += `
+                <div class="${classes.join(' ')}" data-date="${dateStr}">
+                    <span class="day-number">${day}</span>
+                    ${entriesHtml}
+                </div>
+            `;
+        }
+
+        html += '</div>';
+        container.innerHTML = html;
+
+        // Add event listeners
+        container.querySelectorAll('.calendar-day:not(.empty)').forEach(dayEl => {
+            dayEl.addEventListener('click', () => {
+                const date = dayEl.dataset.date;
+                openEntryModal(channelId, date);
+            });
+        });
+
+        const prevBtn = container.querySelector('#calPrev');
+        const nextBtn = container.querySelector('#calNext');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (state.currentMonth > 0) {
+                    state.currentMonth--;
+                    renderSingleCalendar(container, channelId, state.currentMonth);
+                }
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (state.currentMonth < 1) {
+                    state.currentMonth++;
+                    renderSingleCalendar(container, channelId, state.currentMonth);
+                }
+            });
+        }
+    }
+
+    // Get display label for entry
+    function getEntryLabel(entry) {
+        const channel = entry.channel;
+        if (channel.id === 'schedule' || channel.id === 'special') {
+            return entry.title || channel.categoryName;
+        } else if (channel.id === 'reading') {
+            return entry.bookTitle || '독서';
+        } else if (channel.id === 'game') {
+            return entry.gameName || '게임';
+        } else if (channel.id === 'phone') {
+            return entry.duration || '스마트폰';
+        } else if (channel.id === 'kindness') {
+            return '선행';
+        } else if (channel.id.startsWith('study-')) {
+            if (entry.page) return `p.${entry.page}`;
+            if (entry.subject) return entry.subject;
+            return channel.categoryName;
+        }
+        return channel.categoryName;
+    }
+
+    // ===== Modal for Schedule (All entries view) =====
+    function openScheduleModal(date) {
+        state.selectedDate = date;
+        state.currentChannel = 'schedule';
+
+        const dateObj = new Date(date);
+        const dateStr = `${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`;
+
+        elements.modalTitle.textContent = `${dateStr} 전체 일정`;
+
+        const allEntries = getAllEntriesForDate(date);
+
+        let html = '';
+
+        // Show existing entries
+        if (allEntries.length > 0) {
+            html += '<div class="entries-list">';
+            html += '<div class="entries-list-title">등록된 일정</div>';
+
+            allEntries.forEach(entry => {
+                const label = getEntryLabel(entry);
+                const channelName = entry.channel.name;
+                html += `
+                    <div class="entry-item" style="border-left-color: var(--color-${entry.channel.category})">
+                        <div class="entry-item-content">
+                            <strong>[${channelName}]</strong> ${label}
+                            ${entry.content ? `<br><small>${entry.content.substring(0, 50)}${entry.content.length > 50 ? '...' : ''}</small>` : ''}
+                        </div>
+                        <button class="entry-item-delete" data-channel="${entry.channelId}" data-id="${entry.id}">&times;</button>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+        }
+
+        // Form for new schedule entry
+        html += `
+            <div class="form-group">
+                <label class="form-label">새 일정 추가</label>
+            </div>
+            <div class="form-group">
+                <label class="form-label">일정 제목</label>
+                <input type="text" class="form-input" name="title" placeholder="일정 제목을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">일정 내용</label>
+                <textarea class="form-textarea" name="content" placeholder="일정 내용을 입력하세요"></textarea>
+            </div>
+        `;
+
+        elements.modalBody.innerHTML = html;
+        elements.btnDelete.style.display = 'none';
+        elements.modalOverlay.classList.add('active');
+
+        // Add delete button listeners
+        elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const channelId = btn.dataset.channel;
+                const entryId = btn.dataset.id;
+                if (confirm('이 일정을 삭제하시겠습니까?')) {
+                    deleteEntry(channelId, date, entryId);
+                    openScheduleModal(date); // Refresh
+                    refreshAllCalendars();
+                }
+            });
+        });
+    }
+
+    // ===== Modal for Channel Entries =====
+    function openEntryModal(channelId, date, entryId = null) {
+        const channel = CHANNELS[channelId];
+        if (!channel) return;
+
+        state.selectedDate = date;
+        state.currentChannel = channelId;
+        state.editingEntryId = entryId;
+
+        const dateObj = new Date(date);
+        const dateStr = `${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`;
+
+        elements.modalTitle.textContent = `${channel.name} - ${dateStr}`;
+
+        const entries = getEntries(channelId, date);
+        const editingEntry = entryId ? entries.find(e => e.id === entryId) : null;
+
+        let html = '';
+
+        // Show existing entries (if not editing)
+        if (!entryId && entries.length > 0) {
+            html += '<div class="entries-list">';
+            html += '<div class="entries-list-title">등록된 내용</div>';
+
+            entries.forEach(entry => {
+                const label = getEntryLabel({ ...entry, channel });
+                html += `
+                    <div class="entry-item">
+                        <div class="entry-item-content" data-edit="${entry.id}" style="cursor: pointer;">
+                            ${label}
+                            ${entry.content ? `<br><small>${entry.content.substring(0, 30)}${entry.content.length > 30 ? '...' : ''}</small>` : ''}
+                        </div>
+                        <button class="entry-item-delete" data-id="${entry.id}">&times;</button>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            html += '<div class="form-group"><label class="form-label">새로 추가</label></div>';
+        }
+
+        // Build form
+        channel.fields.forEach(field => {
+            const value = editingEntry ? (editingEntry[field.name] || '') : '';
+            if (field.type === 'textarea') {
+                html += `
+                    <div class="form-group">
+                        <label class="form-label">${field.label}</label>
+                        <textarea class="form-textarea" name="${field.name}"
+                            placeholder="${field.label}을(를) 입력하세요">${value}</textarea>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="form-group">
+                        <label class="form-label">${field.label}</label>
+                        <input type="${field.type}" class="form-input" name="${field.name}"
+                            value="${value}" placeholder="${field.label}을(를) 입력하세요">
+                    </div>
+                `;
+            }
+        });
+
+        elements.modalBody.innerHTML = html;
+        elements.btnDelete.style.display = entryId ? 'block' : 'none';
+        elements.btnDelete.disabled = !entryId;
+        elements.modalOverlay.classList.add('active');
+
+        // Add edit listeners
+        elements.modalBody.querySelectorAll('[data-edit]').forEach(el => {
+            el.addEventListener('click', () => {
+                openEntryModal(channelId, date, el.dataset.edit);
+            });
+        });
+
+        // Add delete listeners for list items
+        elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.dataset.id;
+                if (confirm('삭제하시겠습니까?')) {
+                    deleteEntry(channelId, date, id);
+                    openEntryModal(channelId, date); // Refresh
+                    refreshCurrentCalendar();
+                }
+            });
+        });
+    }
+
+    function closeModal() {
+        elements.modalOverlay.classList.remove('active');
+        state.selectedDate = null;
+        state.editingEntryId = null;
+    }
+
+    function saveEntry() {
+        if (!state.currentChannel || !state.selectedDate) return;
+
+        const channel = CHANNELS[state.currentChannel];
+        const entry = {};
+        let hasValue = false;
+
+        channel.fields.forEach(field => {
+            const input = elements.modalBody.querySelector(`[name="${field.name}"]`);
+            if (input) {
+                const value = input.value.trim();
+                entry[field.name] = value;
+                if (value) hasValue = true;
+            }
+        });
+
+        if (!hasValue) {
+            closeModal();
+            return;
+        }
+
+        if (state.editingEntryId) {
+            updateEntry(state.currentChannel, state.selectedDate, state.editingEntryId, entry);
+        } else {
+            addEntry(state.currentChannel, state.selectedDate, entry);
+        }
+
+        closeModal();
+        refreshAllCalendars();
+    }
+
+    function deleteCurrentEntry() {
+        if (!state.currentChannel || !state.selectedDate || !state.editingEntryId) return;
+
+        if (confirm('정말 삭제하시겠습니까?')) {
+            deleteEntry(state.currentChannel, state.selectedDate, state.editingEntryId);
+            closeModal();
+            refreshAllCalendars();
+        }
+    }
+
+    function refreshCurrentCalendar() {
+        if (state.currentChannel && CHANNELS[state.currentChannel]) {
+            const container = document.getElementById(CHANNELS[state.currentChannel].calendar);
+            if (container) {
+                if (state.currentChannel === 'schedule') {
+                    renderFullCalendar(container);
+                } else {
+                    renderSingleCalendar(container, state.currentChannel, state.currentMonth);
+                }
+            }
+        }
+    }
+
+    function refreshAllCalendars() {
+        // Refresh schedule calendar if visible
+        const scheduleContainer = document.getElementById('scheduleCalendar');
+        if (scheduleContainer && state.currentScreen === 'schedule') {
+            renderFullCalendar(scheduleContainer);
+        }
+
+        // Refresh current channel calendar
+        if (state.currentChannel && state.currentChannel !== 'schedule') {
+            refreshCurrentCalendar();
+        }
+    }
+
+    // ===== Event Listeners =====
+    function initEventListeners() {
+        elements.appHeader.addEventListener('click', goHome);
+
+        document.querySelectorAll('.channel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const channel = btn.dataset.channel;
+                if (channel === 'study') {
+                    showScreen('study');
+                } else if (channel) {
+                    showScreen(channel);
+                }
+            });
+        });
+
+        document.querySelectorAll('.back-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.dataset.back;
+                if (target === 'home') {
+                    goHome();
+                } else if (target === 'study') {
+                    showScreen('study');
+                }
+            });
+        });
+
+        elements.modalClose.addEventListener('click', closeModal);
+        elements.modalOverlay.addEventListener('click', (e) => {
+            if (e.target === elements.modalOverlay) {
+                closeModal();
+            }
+        });
+        elements.btnSave.addEventListener('click', saveEntry);
+        elements.btnDelete.addEventListener('click', deleteCurrentEntry);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && elements.modalOverlay.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    }
+
+    // ===== Initialize =====
+    function init() {
+        loadData();
+        initEventListeners();
+        showScreen('home');
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();

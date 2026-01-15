@@ -237,9 +237,13 @@
     }
 
     // ===== Firestore Data Management =====
+    // 공유 문서 ID - 모든 사용자가 같은 데이터를 공유
+    const SHARED_DOC_ID = 'siyoon-family-shared';
+
     function getUserDocRef() {
         if (!state.user) return null;
-        return db.collection('users').doc(state.user.uid);
+        // 모든 사용자가 공유 문서에 접근
+        return db.collection('shared').doc(SHARED_DOC_ID);
     }
 
     async function loadAllData() {

@@ -1,14 +1,18 @@
 // Siyoon's 2026 Winter Vacation Manager
-// Main Application JavaScript
+// Firebase-enabled Application
 
 (function() {
     'use strict';
 
+    // ===== Firebase Services =====
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
     // ===== Configuration =====
     const CONFIG = {
         startDate: new Date(2026, 0, 1),
-        endDate: new Date(2026, 1, 28),
-        storageKey: 'siyoon-vacation-data-v2'
+        endDate: new Date(2026, 1, 28)
     };
 
     // ===== Channel Definitions =====
@@ -154,6 +158,7 @@
 
     // ===== State Management =====
     let state = {
+        user: null,
         currentScreen: 'home',
         currentChannel: null,
         currentMonth: 0,
@@ -166,6 +171,12 @@
     const elements = {
         appHeader: document.getElementById('appHeader'),
         appMain: document.getElementById('appMain'),
+        loginScreen: document.getElementById('loginScreen'),
+        btnGoogleLogin: document.getElementById('btnGoogleLogin'),
+        userBar: document.getElementById('userBar'),
+        userAvatar: document.getElementById('userAvatar'),
+        userName: document.getElementById('userName'),
+        btnLogout: document.getElementById('btnLogout'),
         homeScreen: document.getElementById('homeScreen'),
         modalOverlay: document.getElementById('modalOverlay'),
         entryModal: document.getElementById('entryModal'),
@@ -173,27 +184,96 @@
         modalBody: document.getElementById('modalBody'),
         modalClose: document.getElementById('modalClose'),
         btnSave: document.getElementById('btnSave'),
-        btnDelete: document.getElementById('btnDelete')
+        btnDelete: document.getElementById('btnDelete'),
+        loadingOverlay: document.getElementById('loadingOverlay')
     };
 
-    // ===== Data Management =====
-    function loadData() {
-        try {
-            const saved = localStorage.getItem(CONFIG.storageKey);
-            if (saved) {
-                state.data = JSON.parse(saved);
-            }
-        } catch (e) {
-            console.error('Failed to load data:', e);
+    // ===== Loading =====
+    function showLoading() {
+        elements.loadingOverlay.classList.add('active');
+    }
+
+    function hideLoading() {
+        elements.loadingOverlay.classList.remove('active');
+    }
+
+    // ===== Authentication =====
+    function handleAuthStateChanged(user) {
+        if (user) {
+            state.user = user;
+            elements.loginScreen.style.display = 'none';
+            elements.appMain.style.display = 'block';
+            elements.userAvatar.src = user.photoURL || '';
+            elements.userName.textContent = user.displayName || user.email;
+            loadAllData();
+        } else {
+            state.user = null;
             state.data = {};
+            elements.loginScreen.style.display = 'flex';
+            elements.appMain.style.display = 'none';
         }
     }
 
-    function saveData() {
+    async function loginWithGoogle() {
         try {
-            localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.data));
-        } catch (e) {
-            console.error('Failed to save data:', e);
+            showLoading();
+            await auth.signInWithPopup(googleProvider);
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('로그인에 실패했습니다. 다시 시도해주세요.');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function logout() {
+        try {
+            await auth.signOut();
+            state.data = {};
+            showScreen('home');
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    }
+
+    // ===== Firestore Data Management =====
+    function getUserDocRef() {
+        if (!state.user) return null;
+        return db.collection('users').doc(state.user.uid);
+    }
+
+    async function loadAllData() {
+        if (!state.user) return;
+
+        showLoading();
+        try {
+            const userDoc = await getUserDocRef().get();
+            if (userDoc.exists) {
+                state.data = userDoc.data().entries || {};
+            } else {
+                state.data = {};
+                await getUserDocRef().set({ entries: {} });
+            }
+            // Refresh current view
+            if (state.currentChannel) {
+                initCalendar(state.currentChannel);
+            }
+        } catch (error) {
+            console.error('Error loading data:', error);
+            alert('데이터를 불러오는데 실패했습니다.');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function saveAllData() {
+        if (!state.user) return;
+
+        try {
+            await getUserDocRef().set({ entries: state.data }, { merge: true });
+        } catch (error) {
+            console.error('Error saving data:', error);
+            alert('저장에 실패했습니다. 다시 시도해주세요.');
         }
     }
 
@@ -201,14 +281,12 @@
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
-    // Get all entries for a channel on a specific date
     function getEntries(channelId, date) {
         const key = `${channelId}-${date}`;
         return state.data[key] || [];
     }
 
-    // Add a new entry
-    function addEntry(channelId, date, entry) {
+    async function addEntry(channelId, date, entry) {
         const key = `${channelId}-${date}`;
         if (!state.data[key]) {
             state.data[key] = [];
@@ -219,12 +297,11 @@
             createdAt: new Date().toISOString()
         };
         state.data[key].push(newEntry);
-        saveData();
+        await saveAllData();
         return newEntry;
     }
 
-    // Update an existing entry
-    function updateEntry(channelId, date, entryId, entry) {
+    async function updateEntry(channelId, date, entryId, entry) {
         const key = `${channelId}-${date}`;
         if (state.data[key]) {
             const index = state.data[key].findIndex(e => e.id === entryId);
@@ -234,24 +311,22 @@
                     ...entry,
                     updatedAt: new Date().toISOString()
                 };
-                saveData();
+                await saveAllData();
             }
         }
     }
 
-    // Delete an entry
-    function deleteEntry(channelId, date, entryId) {
+    async function deleteEntry(channelId, date, entryId) {
         const key = `${channelId}-${date}`;
         if (state.data[key]) {
             state.data[key] = state.data[key].filter(e => e.id !== entryId);
             if (state.data[key].length === 0) {
                 delete state.data[key];
             }
-            saveData();
+            await saveAllData();
         }
     }
 
-    // Get all entries for a date across all channels (for schedule view)
     function getAllEntriesForDate(date) {
         const entries = [];
         Object.keys(CHANNELS).forEach(channelId => {
@@ -265,14 +340,6 @@
             });
         });
         return entries;
-    }
-
-    // Check if a date has any entries
-    function hasEntriesForDate(date) {
-        return Object.keys(CHANNELS).some(channelId => {
-            const entries = getEntries(channelId, date);
-            return entries && entries.length > 0;
-        });
     }
 
     // ===== Navigation =====
@@ -321,19 +388,12 @@
         }
     }
 
-    // Render full two-month calendar for schedule view
     function renderFullCalendar(container) {
         let html = '<div class="calendar-full">';
-
-        // January
         html += renderMonthCalendar(0, true);
-
-        // February
         html += renderMonthCalendar(1, true);
-
         html += '</div>';
 
-        // Legend
         html += `
             <div class="calendar-legend">
                 <div class="legend-item"><div class="legend-color schedule"></div>일정</div>
@@ -348,7 +408,6 @@
 
         container.innerHTML = html;
 
-        // Add click events
         container.querySelectorAll('.calendar-day:not(.empty)').forEach(dayEl => {
             dayEl.addEventListener('click', () => {
                 const date = dayEl.dataset.date;
@@ -400,14 +459,17 @@
             if (dayOfWeek === 0) classes.push('sunday');
             if (dayOfWeek === 6) classes.push('saturday');
 
-            // Build entry tags - show ALL entries
             let entriesHtml = '<div class="day-entries">';
-
             allEntries.forEach(entry => {
-                const label = getEntryLabel(entry);
+                // 지식 디딤돌 하위 채널은 전체 이름으로 표시
+                let label;
+                if (entry.channel.id.startsWith('study-')) {
+                    label = entry.channel.name;
+                } else {
+                    label = getEntryLabel(entry);
+                }
                 entriesHtml += `<div class="entry-tag ${entry.channel.category}">${label}</div>`;
             });
-
             entriesHtml += '</div>';
 
             html += `
@@ -422,7 +484,6 @@
         return html;
     }
 
-    // Render single month calendar for other channels
     function renderSingleCalendar(container, channelId, monthOffset) {
         const channel = CHANNELS[channelId];
         const year = 2026;
@@ -493,7 +554,6 @@
         html += '</div>';
         container.innerHTML = html;
 
-        // Add event listeners
         container.querySelectorAll('.calendar-day:not(.empty)').forEach(dayEl => {
             dayEl.addEventListener('click', () => {
                 const date = dayEl.dataset.date;
@@ -523,7 +583,6 @@
         }
     }
 
-    // Get display label for entry
     function getEntryLabel(entry) {
         const channel = entry.channel;
         if (channel.id === 'schedule' || channel.id === 'special') {
@@ -544,7 +603,7 @@
         return channel.categoryName;
     }
 
-    // ===== Modal for Schedule (All entries view) =====
+    // ===== Modal =====
     function openScheduleModal(date) {
         state.selectedDate = date;
         state.currentChannel = 'schedule';
@@ -558,7 +617,6 @@
 
         let html = '';
 
-        // Show existing entries
         if (allEntries.length > 0) {
             html += '<div class="entries-list">';
             html += '<div class="entries-list-title">등록된 일정</div>';
@@ -580,7 +638,6 @@
             html += '</div>';
         }
 
-        // Form for new schedule entry
         html += `
             <div class="form-group">
                 <label class="form-label">새 일정 추가</label>
@@ -599,22 +656,22 @@
         elements.btnDelete.style.display = 'none';
         elements.modalOverlay.classList.add('active');
 
-        // Add delete button listeners
         elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const channelId = btn.dataset.channel;
                 const entryId = btn.dataset.id;
                 if (confirm('이 일정을 삭제하시겠습니까?')) {
-                    deleteEntry(channelId, date, entryId);
-                    openScheduleModal(date); // Refresh
+                    showLoading();
+                    await deleteEntry(channelId, date, entryId);
+                    hideLoading();
+                    openScheduleModal(date);
                     refreshAllCalendars();
                 }
             });
         });
     }
 
-    // ===== Modal for Channel Entries =====
     function openEntryModal(channelId, date, entryId = null) {
         const channel = CHANNELS[channelId];
         if (!channel) return;
@@ -633,7 +690,6 @@
 
         let html = '';
 
-        // Show existing entries (if not editing)
         if (!entryId && entries.length > 0) {
             html += '<div class="entries-list">';
             html += '<div class="entries-list-title">등록된 내용</div>';
@@ -655,7 +711,6 @@
             html += '<div class="form-group"><label class="form-label">새로 추가</label></div>';
         }
 
-        // Build form
         channel.fields.forEach(field => {
             const value = editingEntry ? (editingEntry[field.name] || '') : '';
             if (field.type === 'textarea') {
@@ -682,21 +737,21 @@
         elements.btnDelete.disabled = !entryId;
         elements.modalOverlay.classList.add('active');
 
-        // Add edit listeners
         elements.modalBody.querySelectorAll('[data-edit]').forEach(el => {
             el.addEventListener('click', () => {
                 openEntryModal(channelId, date, el.dataset.edit);
             });
         });
 
-        // Add delete listeners for list items
         elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const id = btn.dataset.id;
                 if (confirm('삭제하시겠습니까?')) {
-                    deleteEntry(channelId, date, id);
-                    openEntryModal(channelId, date); // Refresh
+                    showLoading();
+                    await deleteEntry(channelId, date, id);
+                    hideLoading();
+                    openEntryModal(channelId, date);
                     refreshCurrentCalendar();
                 }
             });
@@ -709,7 +764,7 @@
         state.editingEntryId = null;
     }
 
-    function saveEntry() {
+    async function saveEntry() {
         if (!state.currentChannel || !state.selectedDate) return;
 
         const channel = CHANNELS[state.currentChannel];
@@ -730,21 +785,28 @@
             return;
         }
 
-        if (state.editingEntryId) {
-            updateEntry(state.currentChannel, state.selectedDate, state.editingEntryId, entry);
-        } else {
-            addEntry(state.currentChannel, state.selectedDate, entry);
+        showLoading();
+        try {
+            if (state.editingEntryId) {
+                await updateEntry(state.currentChannel, state.selectedDate, state.editingEntryId, entry);
+            } else {
+                await addEntry(state.currentChannel, state.selectedDate, entry);
+            }
+        } finally {
+            hideLoading();
         }
 
         closeModal();
         refreshAllCalendars();
     }
 
-    function deleteCurrentEntry() {
+    async function deleteCurrentEntry() {
         if (!state.currentChannel || !state.selectedDate || !state.editingEntryId) return;
 
         if (confirm('정말 삭제하시겠습니까?')) {
-            deleteEntry(state.currentChannel, state.selectedDate, state.editingEntryId);
+            showLoading();
+            await deleteEntry(state.currentChannel, state.selectedDate, state.editingEntryId);
+            hideLoading();
             closeModal();
             refreshAllCalendars();
         }
@@ -764,21 +826,120 @@
     }
 
     function refreshAllCalendars() {
-        // Refresh schedule calendar if visible
         const scheduleContainer = document.getElementById('scheduleCalendar');
         if (scheduleContainer && state.currentScreen === 'schedule') {
             renderFullCalendar(scheduleContainer);
         }
 
-        // Refresh current channel calendar
         if (state.currentChannel && state.currentChannel !== 'schedule') {
             refreshCurrentCalendar();
         }
     }
 
+    // ===== CSV Download for Google Sheets =====
+    function generateCSV(channelId) {
+        let rows = [];
+        let headers = ['날짜', '채널'];
+
+        if (channelId === 'all') {
+            // 전체 데이터 - 모든 채널의 모든 필드 포함
+            const allFields = new Set();
+            Object.values(CHANNELS).forEach(ch => {
+                ch.fields.forEach(f => allFields.add(f.label));
+            });
+            headers = headers.concat(Array.from(allFields));
+
+            Object.keys(state.data).forEach(key => {
+                const [chId, date] = key.split(/-(.+)/);
+                const channel = CHANNELS[chId];
+                if (!channel) return;
+
+                state.data[key].forEach(entry => {
+                    const row = [date, channel.name];
+                    Array.from(allFields).forEach(fieldLabel => {
+                        const field = channel.fields.find(f => f.label === fieldLabel);
+                        if (field) {
+                            row.push(entry[field.name] || '');
+                        } else {
+                            row.push('');
+                        }
+                    });
+                    rows.push(row);
+                });
+            });
+        } else {
+            // 특정 채널 데이터
+            const channel = CHANNELS[channelId];
+            if (!channel) return null;
+
+            headers = headers.concat(channel.fields.map(f => f.label));
+
+            Object.keys(state.data).forEach(key => {
+                if (!key.startsWith(channelId + '-')) return;
+                const date = key.replace(channelId + '-', '');
+
+                state.data[key].forEach(entry => {
+                    const row = [date, channel.name];
+                    channel.fields.forEach(field => {
+                        row.push(entry[field.name] || '');
+                    });
+                    rows.push(row);
+                });
+            });
+        }
+
+        // 날짜순 정렬
+        rows.sort((a, b) => a[0].localeCompare(b[0]));
+
+        // CSV 문자열 생성 (BOM 추가로 한글 지원)
+        const escapeCSV = (str) => {
+            if (str === null || str === undefined) return '';
+            str = String(str);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        };
+
+        const csvContent = '\uFEFF' + [headers, ...rows]
+            .map(row => row.map(escapeCSV).join(','))
+            .join('\n');
+
+        return csvContent;
+    }
+
+    function downloadCSV(channelId) {
+        const csv = generateCSV(channelId);
+        if (!csv) {
+            alert('다운로드할 데이터가 없습니다.');
+            return;
+        }
+
+        const channelName = channelId === 'all' ? '전체일정' : CHANNELS[channelId]?.name || channelId;
+        const filename = `시윤_겨울방학_${channelName}_${new Date().toISOString().split('T')[0]}.csv`;
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
     // ===== Event Listeners =====
     function initEventListeners() {
         elements.appHeader.addEventListener('click', goHome);
+        elements.btnGoogleLogin.addEventListener('click', loginWithGoogle);
+        elements.btnLogout.addEventListener('click', logout);
+
+        // 다운로드 버튼 이벤트
+        document.querySelectorAll('.btn-download').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const channelId = btn.dataset.channel;
+                downloadCSV(channelId);
+            });
+        });
 
         document.querySelectorAll('.channel-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -820,9 +981,8 @@
 
     // ===== Initialize =====
     function init() {
-        loadData();
         initEventListeners();
-        showScreen('home');
+        auth.onAuthStateChanged(handleAuthStateChanged);
     }
 
     if (document.readyState === 'loading') {

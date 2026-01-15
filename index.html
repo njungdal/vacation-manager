@@ -16,8 +16,30 @@
             <h1 class="app-title">Siyoon's 2026 Winter Vacation Manager</h1>
         </header>
 
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-container">
+                <div class="login-icon">📚</div>
+                <h2 class="login-title">시윤이의 겨울방학 매니저</h2>
+                <p class="login-subtitle">Google 계정으로 로그인하면<br>모든 기기에서 동기화됩니다</p>
+                <button class="btn-google-login" id="btnGoogleLogin">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                    Google로 로그인
+                </button>
+            </div>
+        </div>
+
         <!-- Main Content -->
-        <main class="app-main" id="appMain">
+        <main class="app-main" id="appMain" style="display: none;">
+            <!-- User Info Bar -->
+            <div class="user-bar" id="userBar">
+                <div class="user-info">
+                    <img class="user-avatar" id="userAvatar" src="" alt="">
+                    <span class="user-name" id="userName"></span>
+                </div>
+                <button class="btn-logout" id="btnLogout">로그아웃</button>
+            </div>
+
             <!-- Home Screen -->
             <div class="screen active" id="homeScreen">
                 <div class="welcome-message">
@@ -67,6 +89,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">방학 일정</h2>
+                    <button class="btn-download" data-channel="all" title="전체 데이터 다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="scheduleCalendar"></div>
             </div>
@@ -111,6 +134,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">기초학력 진단평가</h2>
+                    <button class="btn-download" data-channel="study-basic" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="studyBasicCalendar"></div>
             </div>
@@ -119,6 +143,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">만점왕 수학(6-1)</h2>
+                    <button class="btn-download" data-channel="study-math" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="studyMathCalendar"></div>
             </div>
@@ -127,6 +152,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">기적의 계산법</h2>
+                    <button class="btn-download" data-channel="study-calc" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="studyCalcCalendar"></div>
             </div>
@@ -135,6 +161,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">초등영문법 3800제</h2>
+                    <button class="btn-download" data-channel="study-english" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="studyEnglishCalendar"></div>
             </div>
@@ -143,6 +170,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">엘리하이</h2>
+                    <button class="btn-download" data-channel="study-elihi" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="studyEliHiCalendar"></div>
             </div>
@@ -152,6 +180,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">게임 정복기</h2>
+                    <button class="btn-download" data-channel="game" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="gameCalendar"></div>
             </div>
@@ -161,6 +190,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">1일 1독서</h2>
+                    <button class="btn-download" data-channel="reading" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="readingCalendar"></div>
             </div>
@@ -170,6 +200,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">1일 1선행</h2>
+                    <button class="btn-download" data-channel="kindness" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="kindnessCalendar"></div>
             </div>
@@ -179,6 +210,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">스마트폰 사용시간</h2>
+                    <button class="btn-download" data-channel="phone" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="phoneCalendar"></div>
             </div>
@@ -188,6 +220,7 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">특별한 일정</h2>
+                    <button class="btn-download" data-channel="special" title="다운로드">📥</button>
                 </div>
                 <div class="calendar-container" id="specialCalendar"></div>
             </div>
@@ -209,7 +242,31 @@
                 </div>
             </div>
         </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <p>동기화 중...</p>
+        </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC0orZoUfUHJkyCyx072aABsI7wYgWdRgQ",
+            authDomain: "vacation-manager-b16f4.firebaseapp.com",
+            projectId: "vacation-manager-b16f4",
+            storageBucket: "vacation-manager-b16f4.firebasestorage.app",
+            messagingSenderId: "820536841753",
+            appId: "1:820536841753:web:c21287bb71cf985fd37c88"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
 
     <script src="app.js"></script>
 </body>

@@ -130,6 +130,19 @@
                 { name: 'content', label: '오늘 한 선행', type: 'textarea', required: false }
             ]
         },
+        exercise: {
+            id: 'exercise',
+            name: '1일 1운동',
+            screen: 'exerciseScreen',
+            calendar: 'exerciseCalendar',
+            category: 'exercise',
+            categoryName: '운동',
+            fields: [
+                { name: 'exerciseType', label: '운동 종류', type: 'text', required: false },
+                { name: 'duration', label: '운동 시간 (예: 30분)', type: 'text', required: false },
+                { name: 'content', label: '운동 내용/소감', type: 'textarea', required: false }
+            ]
+        },
         phone: {
             id: 'phone',
             name: '스마트폰 사용시간',
@@ -405,6 +418,7 @@
                 <div class="legend-item"><div class="legend-color game"></div>게임</div>
                 <div class="legend-item"><div class="legend-color reading"></div>독서</div>
                 <div class="legend-item"><div class="legend-color kindness"></div>선행</div>
+                <div class="legend-item"><div class="legend-color exercise"></div>운동</div>
                 <div class="legend-item"><div class="legend-color phone"></div>스마트폰</div>
                 <div class="legend-item"><div class="legend-color special"></div>특별</div>
             </div>
@@ -465,10 +479,13 @@
 
             let entriesHtml = '<div class="day-entries">';
             allEntries.forEach(entry => {
-                // 지식 디딤돌 하위 채널은 전체 이름으로 표시
+                // 지식 디딤돌 하위 채널은 전체 이름 + 성적 표시
                 let label;
                 if (entry.channel.id.startsWith('study-')) {
                     label = entry.channel.name;
+                    if (entry.score) {
+                        label += ` (${entry.score}점)`;
+                    }
                 } else {
                     label = getEntryLabel(entry);
                 }
@@ -599,6 +616,8 @@
             return entry.duration || '스마트폰';
         } else if (channel.id === 'kindness') {
             return '선행';
+        } else if (channel.id === 'exercise') {
+            return entry.exerciseType || '운동';
         } else if (channel.id.startsWith('study-')) {
             if (entry.page) return `p.${entry.page}`;
             if (entry.subject) return entry.subject;
@@ -840,13 +859,153 @@
         }
     }
 
-    // ===== CSV Download for Google Sheets =====
+    // ===== 채널별 색상 정의 =====
+    const CHANNEL_COLORS = {
+        'schedule': { bg: '#E8F5E9', text: '#2E7D32' },
+        'study-basic': { bg: '#EDE7F6', text: '#5E35B1' },
+        'study-math': { bg: '#EDE7F6', text: '#5E35B1' },
+        'study-calc': { bg: '#EDE7F6', text: '#5E35B1' },
+        'study-english': { bg: '#EDE7F6', text: '#5E35B1' },
+        'study-elihi': { bg: '#EDE7F6', text: '#5E35B1' },
+        'game': { bg: '#FFF3E0', text: '#E65100' },
+        'reading': { bg: '#E3F2FD', text: '#1565C0' },
+        'kindness': { bg: '#FCE4EC', text: '#C2185B' },
+        'exercise': { bg: '#E8F5E9', text: '#388E3C' },
+        'phone': { bg: '#E0F7FA', text: '#00838F' },
+        'special': { bg: '#FFEBEE', text: '#C62828' }
+    };
+
+    // ===== HTML 테이블 다운로드 (스타일 포함) =====
+    function generateStyledHTML(channelId) {
+        let rows = [];
+        let headers = ['날짜', '채널'];
+        let channelIds = [];
+
+        if (channelId === 'all') {
+            const allFields = new Set();
+            Object.values(CHANNELS).forEach(ch => {
+                ch.fields.forEach(f => allFields.add(f.label));
+            });
+            headers = headers.concat(Array.from(allFields));
+
+            Object.keys(state.data).forEach(key => {
+                const [chId, date] = key.split(/-(.+)/);
+                const channel = CHANNELS[chId];
+                if (!channel) return;
+
+                state.data[key].forEach(entry => {
+                    const row = [date, channel.name];
+                    Array.from(allFields).forEach(fieldLabel => {
+                        const field = channel.fields.find(f => f.label === fieldLabel);
+                        if (field) {
+                            row.push(entry[field.name] || '');
+                        } else {
+                            row.push('');
+                        }
+                    });
+                    rows.push(row);
+                    channelIds.push(chId);
+                });
+            });
+        } else {
+            const channel = CHANNELS[channelId];
+            if (!channel) return null;
+
+            headers = headers.concat(channel.fields.map(f => f.label));
+
+            Object.keys(state.data).forEach(key => {
+                if (!key.startsWith(channelId + '-')) return;
+                const date = key.replace(channelId + '-', '');
+
+                state.data[key].forEach(entry => {
+                    const row = [date, channel.name];
+                    channel.fields.forEach(field => {
+                        row.push(entry[field.name] || '');
+                    });
+                    rows.push(row);
+                    channelIds.push(channelId);
+                });
+            });
+        }
+
+        // 날짜순 정렬
+        const sortedIndices = rows.map((_, i) => i).sort((a, b) => rows[a][0].localeCompare(rows[b][0]));
+        rows = sortedIndices.map(i => rows[i]);
+        channelIds = sortedIndices.map(i => channelIds[i]);
+
+        if (rows.length === 0) return null;
+
+        // HTML 테이블 생성 (구글 시트에서 열 때 스타일 적용됨)
+        let html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    table { border-collapse: collapse; width: 100%; font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; }
+    th { background-color: #FFEB00; color: #191919; font-weight: bold; padding: 12px 8px; border: 1px solid #E0E0E0; text-align: center; font-size: 14px; }
+    td { padding: 10px 8px; border: 1px solid #E0E0E0; font-size: 13px; }
+    .date { font-weight: bold; text-align: center; width: 100px; }
+    .channel { font-weight: 600; text-align: center; width: 150px; }
+    tr:nth-child(even) { background-color: #FAFAFA; }
+</style>
+</head>
+<body>
+<table>
+<thead>
+<tr>`;
+
+        headers.forEach((h, i) => {
+            html += `<th>${h}</th>`;
+        });
+        html += `</tr></thead><tbody>`;
+
+        rows.forEach((row, rowIndex) => {
+            const chId = channelIds[rowIndex];
+            const colors = CHANNEL_COLORS[chId] || { bg: '#FFFFFF', text: '#000000' };
+
+            html += `<tr>`;
+            row.forEach((cell, cellIndex) => {
+                if (cellIndex === 0) {
+                    html += `<td class="date">${cell}</td>`;
+                } else if (cellIndex === 1) {
+                    html += `<td class="channel" style="background-color: ${colors.bg}; color: ${colors.text};">${cell}</td>`;
+                } else {
+                    html += `<td>${cell}</td>`;
+                }
+            });
+            html += `</tr>`;
+        });
+
+        html += `</tbody></table></body></html>`;
+        return html;
+    }
+
+    function downloadStyledSheet(channelId) {
+        const html = generateStyledHTML(channelId);
+        if (!html) {
+            alert('다운로드할 데이터가 없습니다.');
+            return;
+        }
+
+        const channelName = channelId === 'all' ? '전체일정' : CHANNELS[channelId]?.name || channelId;
+        const filename = `시윤_겨울방학_${channelName}_${new Date().toISOString().split('T')[0]}.xls`;
+
+        // .xls 확장자로 저장하면 구글 시트/엑셀에서 스타일이 적용된 상태로 열림
+        const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
+    // ===== CSV Download (백업용) =====
     function generateCSV(channelId) {
         let rows = [];
         let headers = ['날짜', '채널'];
 
         if (channelId === 'all') {
-            // 전체 데이터 - 모든 채널의 모든 필드 포함
             const allFields = new Set();
             Object.values(CHANNELS).forEach(ch => {
                 ch.fields.forEach(f => allFields.add(f.label));
@@ -872,7 +1031,6 @@
                 });
             });
         } else {
-            // 특정 채널 데이터
             const channel = CHANNELS[channelId];
             if (!channel) return null;
 
@@ -892,10 +1050,8 @@
             });
         }
 
-        // 날짜순 정렬
         rows.sort((a, b) => a[0].localeCompare(b[0]));
 
-        // CSV 문자열 생성 (BOM 추가로 한글 지원)
         const escapeCSV = (str) => {
             if (str === null || str === undefined) return '';
             str = String(str);
@@ -913,21 +1069,8 @@
     }
 
     function downloadCSV(channelId) {
-        const csv = generateCSV(channelId);
-        if (!csv) {
-            alert('다운로드할 데이터가 없습니다.');
-            return;
-        }
-
-        const channelName = channelId === 'all' ? '전체일정' : CHANNELS[channelId]?.name || channelId;
-        const filename = `시윤_겨울방학_${channelName}_${new Date().toISOString().split('T')[0]}.csv`;
-
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
-        URL.revokeObjectURL(link.href);
+        // 스타일이 적용된 시트로 다운로드
+        downloadStyledSheet(channelId);
     }
 
     // ===== Event Listeners =====

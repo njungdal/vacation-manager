@@ -6,31 +6,32 @@
 }
 
 :root {
-    /* Dark Theme - Texture App Style */
-    --primary-color: #6366F1;
-    --primary-light: #818CF8;
-    --primary-dark: #4F46E5;
-    --secondary-color: #1F2937;
-    --background-color: #15171A;
-    --surface-color: #1E2128;
-    --surface-hover: #252A33;
-    --text-primary: #FFFFFF;
-    --text-secondary: #9CA3AF;
-    --text-light: #6B7280;
-    --success-color: #10B981;
-    --warning-color: #F59E0B;
-    --danger-color: #EF4444;
-    --border-color: #2D3139;
-    --shadow-color: rgba(0, 0, 0, 0.3);
+    /* KakaoBank Style - Light Theme with Yellow Accent */
+    --primary-color: #FFEB00;
+    --primary-dark: #FDD835;
+    --primary-text: #191919;
+    --secondary-color: #F5F6F8;
+    --background-color: #FFFFFF;
+    --surface-color: #FFFFFF;
+    --surface-secondary: #F5F6F8;
+    --text-primary: #191919;
+    --text-secondary: #666666;
+    --text-light: #999999;
+    --success-color: #00C853;
+    --warning-color: #FF9800;
+    --danger-color: #FF5252;
+    --border-color: #E8E8E8;
+    --shadow-color: rgba(0, 0, 0, 0.08);
 
     /* Category colors for calendar */
-    --color-study: #8B5CF6;
-    --color-game: #F59E0B;
-    --color-reading: #3B82F6;
-    --color-kindness: #EC4899;
-    --color-phone: #06B6D4;
-    --color-special: #EF4444;
-    --color-schedule: #10B981;
+    --color-study: #7C4DFF;
+    --color-game: #FF9800;
+    --color-reading: #2196F3;
+    --color-kindness: #E91E63;
+    --color-exercise: #4CAF50;
+    --color-phone: #00BCD4;
+    --color-special: #FF5252;
+    --color-schedule: #00C853;
 
     /* Spacing */
     --spacing-xs: 4px;
@@ -39,14 +40,14 @@
     --spacing-lg: 24px;
     --spacing-xl: 32px;
 
-    /* Border radius */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
+    /* Border radius - iOS style rounded */
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
 
     /* Font */
-    --font-family: 'Spoqa Han Sans Neo', -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+    --font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
 }
 
 html, body {
@@ -55,32 +56,31 @@ html, body {
     font-size: 16px;
     line-height: 1.5;
     color: var(--text-primary);
-    background-color: var(--background-color);
+    background-color: var(--surface-secondary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 /* App Container */
 .app-container {
-    max-width: 800px;
+    max-width: 500px;
     margin: 0 auto;
     min-height: 100vh;
-    background-color: var(--background-color);
+    background-color: var(--surface-secondary);
     display: flex;
     flex-direction: column;
     position: relative;
 }
 
-/* Header */
+/* Header - KakaoBank style */
 .app-header {
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
-    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--primary-color);
+    padding: var(--spacing-lg) var(--spacing-lg);
     position: sticky;
     top: 0;
     z-index: 100;
     cursor: pointer;
     transition: transform 0.2s ease;
-    border-bottom: 1px solid var(--border-color);
 }
 
 .app-header:active {
@@ -88,11 +88,11 @@ html, body {
 }
 
 .app-title {
-    color: white;
-    font-size: 1.2rem;
+    color: var(--primary-text);
+    font-size: 1.1rem;
     font-weight: 700;
     text-align: center;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.5px;
 }
 
 /* Main Content */
@@ -115,7 +115,7 @@ html, body {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -123,23 +123,23 @@ html, body {
     }
 }
 
-/* Welcome Message */
+/* Welcome Message - Card style */
 .welcome-message {
-    background: linear-gradient(135deg, var(--surface-color) 0%, var(--surface-hover) 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
     text-align: center;
-    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(255, 235, 0, 0.3);
 }
 
 .welcome-message p {
-    color: var(--text-primary);
-    font-size: 1.1rem;
+    color: var(--primary-text);
+    font-size: 1rem;
     font-weight: 600;
 }
 
-/* Channel List */
+/* Channel List - Card style */
 .channel-list, .sub-channel-list {
     display: flex;
     flex-direction: column;
@@ -152,17 +152,17 @@ html, body {
     width: 100%;
     padding: var(--spacing-md) var(--spacing-lg);
     background-color: var(--surface-color);
-    border: 1px solid var(--border-color);
+    border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     text-align: left;
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .channel-btn:hover {
-    background-color: var(--surface-hover);
-    border-color: var(--primary-color);
-    transform: translateX(4px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--shadow-color);
 }
 
 .channel-btn:active {
@@ -171,49 +171,47 @@ html, body {
 
 .channel-btn.sub {
     padding: var(--spacing-md);
-    background-color: var(--surface-color);
 }
 
 .channel-icon {
     font-size: 1.5rem;
     margin-right: var(--spacing-md);
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--secondary-color);
+    background-color: var(--surface-secondary);
     border-radius: var(--radius-sm);
 }
 
 .channel-name {
     flex: 1;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
 }
 
 .channel-arrow {
-    color: var(--primary-light);
-    font-size: 1.5rem;
-    font-weight: 500;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    font-weight: 400;
 }
 
 /* Screen Header */
 .screen-header {
     display: flex;
     align-items: center;
-    margin-bottom: var(--spacing-lg);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
 }
 
 .back-btn {
     background: none;
     border: none;
-    color: var(--primary-light);
+    color: var(--text-primary);
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     padding: var(--spacing-sm) var(--spacing-md);
     margin-left: calc(-1 * var(--spacing-md));
@@ -222,23 +220,23 @@ html, body {
 }
 
 .back-btn:hover {
-    background-color: var(--surface-hover);
+    background-color: var(--surface-secondary);
 }
 
 .screen-title {
     flex: 1;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-primary);
 }
 
 /* Download Button */
 .btn-download {
-    background: var(--surface-color);
-    border: 1px solid var(--border-color);
+    background: var(--surface-secondary);
+    border: none;
     color: var(--text-primary);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-sm);
@@ -250,34 +248,31 @@ html, body {
 
 .btn-download:hover {
     background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    transform: scale(1.05);
 }
 
 .btn-download:active {
     transform: scale(0.95);
 }
 
-/* Calendar Container */
+/* Calendar Container - Card style */
 .calendar-container {
     background-color: var(--surface-color);
     border-radius: var(--radius-lg);
     padding: var(--spacing-md);
-    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px var(--shadow-color);
 }
 
 /* Full Calendar (Two months view) */
 .calendar-full {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
 }
 
 .calendar-month {
     background-color: var(--surface-color);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
-    border: 1px solid var(--border-color);
 }
 
 .calendar-header {
@@ -285,36 +280,33 @@ html, body {
     align-items: center;
     justify-content: space-between;
     margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
 }
 
 .calendar-nav-btn {
-    background: var(--secondary-color);
-    border: 1px solid var(--border-color);
+    background: var(--surface-secondary);
+    border: none;
     color: var(--text-primary);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     cursor: pointer;
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-sm);
     transition: all 0.2s ease;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .calendar-nav-btn:hover {
     background-color: var(--primary-color);
-    border-color: var(--primary-color);
 }
 
 .calendar-nav-btn:disabled {
-    background-color: var(--surface-hover);
+    background-color: var(--surface-secondary);
     color: var(--text-light);
     cursor: not-allowed;
-    border-color: var(--border-color);
 }
 
 .calendar-month-year {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-primary);
 }
@@ -328,22 +320,18 @@ html, body {
 
 .calendar-weekday {
     text-align: center;
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 0.8rem;
+    font-weight: 600;
     color: var(--text-secondary);
     padding: var(--spacing-sm);
-    background-color: var(--secondary-color);
-    border-radius: var(--radius-sm);
 }
 
 .calendar-weekday:first-child {
-    color: #F87171;
-    background-color: rgba(248, 113, 113, 0.1);
+    color: #FF5252;
 }
 
 .calendar-weekday:last-child {
-    color: #60A5FA;
-    background-color: rgba(96, 165, 250, 0.1);
+    color: #2196F3;
 }
 
 .calendar-days {
@@ -353,7 +341,7 @@ html, body {
 }
 
 .calendar-day {
-    min-height: 60px;
+    min-height: 56px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -361,24 +349,23 @@ html, body {
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.2s ease;
-    background-color: var(--secondary-color);
+    background-color: var(--surface-secondary);
     border: 2px solid transparent;
 }
 
-/* Full calendar view - show all entries */
+/* Full calendar view */
 .calendar-full .calendar-day {
     min-height: auto;
     padding-bottom: var(--spacing-sm);
 }
 
 .calendar-day:hover {
-    background-color: var(--surface-hover);
+    background-color: #FFF9C4;
     border-color: var(--primary-color);
-    transform: scale(1.02);
 }
 
 .calendar-day:active {
-    transform: scale(0.98);
+    transform: scale(0.95);
 }
 
 .calendar-day.empty {
@@ -395,7 +382,7 @@ html, body {
 
 .calendar-day.today {
     background-color: var(--primary-color);
-    border-color: var(--primary-light);
+    border-color: var(--primary-dark);
 }
 
 .calendar-day.today:hover {
@@ -403,8 +390,8 @@ html, body {
 }
 
 .calendar-day.has-entry {
-    background-color: var(--surface-hover);
-    border-color: var(--border-color);
+    background-color: #FFFDE7;
+    border-color: #FFF59D;
 }
 
 .calendar-day.has-entry.today {
@@ -412,19 +399,20 @@ html, body {
 }
 
 .calendar-day.sunday .day-number {
-    color: #F87171;
+    color: #FF5252;
 }
 
 .calendar-day.saturday .day-number {
-    color: #60A5FA;
+    color: #2196F3;
 }
 
 .calendar-day.today .day-number {
-    color: white;
+    color: var(--primary-text);
+    font-weight: 700;
 }
 
 .day-number {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     text-align: center;
     margin-bottom: 2px;
@@ -443,11 +431,11 @@ html, body {
 }
 
 .entry-tag {
-    font-size: 0.6rem;
-    padding: 1px 4px;
-    border-radius: 3px;
+    font-size: 0.55rem;
+    padding: 2px 4px;
+    border-radius: 4px;
     color: white;
-    font-weight: 500;
+    font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -457,38 +445,34 @@ html, body {
 .entry-tag.game { background-color: var(--color-game); }
 .entry-tag.reading { background-color: var(--color-reading); }
 .entry-tag.kindness { background-color: var(--color-kindness); }
+.entry-tag.exercise { background-color: var(--color-exercise); }
 .entry-tag.phone { background-color: var(--color-phone); }
 .entry-tag.special { background-color: var(--color-special); }
 .entry-tag.schedule { background-color: var(--color-schedule); }
 
 .entry-more {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     color: var(--text-secondary);
     text-align: center;
     font-weight: 500;
 }
 
-.calendar-day.today .entry-tag {
-    opacity: 0.9;
-}
-
 .calendar-day.today .entry-more {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--primary-text);
 }
 
-/* Modal Styles */
+/* Modal Styles - iOS style */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.4);
     display: none;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     z-index: 1000;
-    padding: var(--spacing-md);
 }
 
 .modal-overlay.active {
@@ -497,19 +481,18 @@ html, body {
 
 .modal {
     background-color: var(--surface-color);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     width: 100%;
     max-width: 500px;
-    max-height: 85vh;
+    max-height: 90vh;
     overflow-y: auto;
-    animation: modalSlideIn 0.3s ease;
-    border: 1px solid var(--border-color);
+    animation: modalSlideUp 0.3s ease;
 }
 
-@keyframes modalSlideIn {
+@keyframes modalSlideUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(100%);
     }
     to {
         opacity: 1;
@@ -521,9 +504,8 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
     border-bottom: 1px solid var(--border-color);
-    background-color: var(--secondary-color);
 }
 
 .modal-title {
@@ -533,18 +515,25 @@ html, body {
 }
 
 .modal-close {
-    background: none;
+    background: var(--surface-secondary);
     border: none;
-    font-size: 1.5rem;
-    color: var(--text-light);
+    font-size: 1.2rem;
+    color: var(--text-secondary);
     cursor: pointer;
-    padding: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .modal-close:hover {
-    color: var(--danger-color);
+    background-color: var(--danger-color);
+    color: white;
 }
 
 .modal-body {
@@ -557,22 +546,20 @@ html, body {
 }
 
 .entries-list-title {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-secondary);
     margin-bottom: var(--spacing-sm);
-    padding-bottom: var(--spacing-xs);
-    border-bottom: 1px solid var(--border-color);
 }
 
 .entry-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--secondary-color);
+    padding: var(--spacing-md);
+    background-color: var(--surface-secondary);
     border-radius: var(--radius-sm);
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
     border-left: 4px solid var(--primary-color);
 }
 
@@ -607,7 +594,7 @@ html, body {
 
 .form-label {
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-secondary);
     margin-bottom: var(--spacing-xs);
@@ -621,14 +608,15 @@ html, body {
     font-size: 1rem;
     font-family: var(--font-family);
     color: var(--text-primary);
-    background-color: var(--secondary-color);
+    background-color: var(--surface-secondary);
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .form-input:focus, .form-textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    background-color: var(--surface-hover);
+    background-color: var(--surface-color);
+    box-shadow: 0 0 0 3px rgba(255, 235, 0, 0.2);
 }
 
 .form-input::placeholder, .form-textarea::placeholder {
@@ -643,9 +631,7 @@ html, body {
 .modal-footer {
     display: flex;
     gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-top: 1px solid var(--border-color);
-    background-color: var(--secondary-color);
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-xl);
 }
 
 .btn {
@@ -661,18 +647,16 @@ html, body {
 
 .btn-save {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--primary-text);
 }
 
 .btn-save:hover {
     background-color: var(--primary-dark);
-    transform: translateY(-1px);
 }
 
 .btn-delete {
-    background-color: var(--surface-hover);
+    background-color: var(--surface-secondary);
     color: var(--danger-color);
-    border: 1px solid var(--danger-color);
 }
 
 .btn-delete:hover {
@@ -681,12 +665,12 @@ html, body {
 }
 
 .btn-cancel {
-    background-color: var(--surface-hover);
+    background-color: var(--surface-secondary);
     color: var(--text-secondary);
 }
 
 .btn-cancel:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--border-color);
 }
 
 /* Legend for calendar */
@@ -695,7 +679,7 @@ html, body {
     flex-wrap: wrap;
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
-    background-color: var(--secondary-color);
+    background-color: var(--surface-secondary);
     border-radius: var(--radius-sm);
     margin-top: var(--spacing-md);
 }
@@ -711,13 +695,14 @@ html, body {
 .legend-color {
     width: 12px;
     height: 12px;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 .legend-color.study { background-color: var(--color-study); }
 .legend-color.game { background-color: var(--color-game); }
 .legend-color.reading { background-color: var(--color-reading); }
 .legend-color.kindness { background-color: var(--color-kindness); }
+.legend-color.exercise { background-color: var(--color-exercise); }
 .legend-color.phone { background-color: var(--color-phone); }
 .legend-color.special { background-color: var(--color-special); }
 .legend-color.schedule { background-color: var(--color-schedule); }
@@ -733,17 +718,17 @@ html, body {
     }
 
     .channel-icon {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         font-size: 1.3rem;
     }
 
     .channel-name {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
     .calendar-day {
-        min-height: 65px;
+        min-height: 52px;
     }
 
     .day-number {
@@ -751,17 +736,17 @@ html, body {
     }
 
     .entry-tag {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
 }
 
 @media (min-width: 600px) {
     .calendar-day {
-        min-height: 90px;
+        min-height: 80px;
     }
 
     .entry-tag {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         padding: 2px 6px;
     }
 }
@@ -769,10 +754,10 @@ html, body {
 /* Safe area for notched phones */
 @supports (padding-top: env(safe-area-inset-top)) {
     .app-header {
-        padding-top: calc(var(--spacing-md) + env(safe-area-inset-top));
+        padding-top: calc(var(--spacing-lg) + env(safe-area-inset-top));
     }
 
-    .modal-overlay {
+    .modal {
         padding-bottom: env(safe-area-inset-bottom);
     }
 }
@@ -781,62 +766,42 @@ html, body {
 @media (hover: none) {
     .channel-btn:hover {
         transform: none;
-        background-color: var(--surface-color);
-        border-color: var(--border-color);
+        box-shadow: 0 2px 8px var(--shadow-color);
     }
 
     .channel-btn:active {
-        background-color: var(--surface-hover);
+        background-color: var(--surface-secondary);
         transform: scale(0.98);
     }
 
     .calendar-day:hover {
-        transform: none;
+        background-color: var(--surface-secondary);
+        border-color: transparent;
     }
 
     .calendar-day:active {
         transform: scale(0.95);
-        background-color: var(--surface-hover);
+        background-color: #FFF9C4;
     }
 }
 
 /* Scrollbar styling */
 .app-main::-webkit-scrollbar {
-    width: 6px;
-}
-
-.app-main::-webkit-scrollbar-track {
-    background: var(--background-color);
-}
-
-.app-main::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-    border-radius: 3px;
-}
-
-.app-main::-webkit-scrollbar-thumb:hover {
-    background-color: var(--text-light);
+    width: 0;
+    display: none;
 }
 
 .modal::-webkit-scrollbar {
-    width: 6px;
+    width: 0;
+    display: none;
 }
 
-.modal::-webkit-scrollbar-track {
-    background: var(--surface-color);
-}
-
-.modal::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-    border-radius: 3px;
-}
-
-/* Login Screen */
+/* Login Screen - KakaoBank style */
 .login-screen {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 80px);
     padding: var(--spacing-lg);
 }
 
@@ -844,8 +809,8 @@ html, body {
     text-align: center;
     background-color: var(--surface-color);
     padding: var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 4px 20px var(--shadow-color);
     max-width: 320px;
     width: 100%;
 }
@@ -856,7 +821,7 @@ html, body {
 }
 
 .login-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: var(--spacing-sm);
@@ -876,19 +841,25 @@ html, body {
     gap: var(--spacing-sm);
     width: 100%;
     padding: var(--spacing-md) var(--spacing-lg);
-    background-color: var(--surface-hover);
-    border: 1px solid var(--border-color);
+    background-color: var(--primary-color);
+    border: none;
     border-radius: var(--radius-md);
     font-size: 1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--primary-text);
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(255, 235, 0, 0.3);
 }
 
 .btn-google-login:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--primary-color);
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 235, 0, 0.4);
+}
+
+.btn-google-login:active {
+    transform: scale(0.98);
 }
 
 .btn-google-login img {
@@ -896,16 +867,16 @@ html, body {
     height: 20px;
 }
 
-/* User Bar */
+/* User Bar - Card style */
 .user-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md);
     background-color: var(--surface-color);
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
-    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .user-info {
@@ -915,25 +886,25 @@ html, body {
 }
 
 .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     border: 2px solid var(--primary-color);
 }
 
 .user-name {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-primary);
 }
 
 .btn-logout {
-    padding: var(--spacing-xs) var(--spacing-md);
-    background-color: var(--secondary-color);
-    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--surface-secondary);
+    border: none;
     border-radius: var(--radius-sm);
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -941,7 +912,6 @@ html, body {
 
 .btn-logout:hover {
     background-color: var(--danger-color);
-    border-color: var(--danger-color);
     color: white;
 }
 
@@ -952,7 +922,7 @@ html, body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(21, 23, 26, 0.95);
+    background-color: rgba(255, 255, 255, 0.95);
     display: none;
     flex-direction: column;
     align-items: center;
@@ -970,7 +940,7 @@ html, body {
     border: 4px solid var(--border-color);
     border-top-color: var(--primary-color);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
     margin-bottom: var(--spacing-md);
 }
 
@@ -981,4 +951,5 @@ html, body {
 .loading-overlay p {
     font-size: 0.9rem;
     color: var(--text-secondary);
+    font-weight: 500;
 }

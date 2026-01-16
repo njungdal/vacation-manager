@@ -1,5 +1,6 @@
 // Siyoon's 2026 Winter Vacation Manager
 // Firebase-enabled Application
+// v1.1 - Bible verse update
 
 (function() {
     'use strict';

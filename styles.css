@@ -178,6 +178,25 @@ html, body {
     opacity: 0.9;
 }
 
+/* Weather Banner */
+.weather-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--surface-secondary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.weather-divider {
+    color: var(--border-color);
+}
+
 /* Channel List - Card style */
 .channel-list, .sub-channel-list {
     display: flex;

@@ -40,20 +40,20 @@
                 <button class="btn-guest-to-login" id="btnGuestToLogin">로그인</button>
             </div>
 
-            <!-- User Info Bar -->
-            <div class="user-bar" id="userBar">
-                <div class="user-info">
-                    <img class="user-avatar" id="userAvatar" src="" alt="">
-                    <span class="user-name" id="userName"></span>
-                </div>
-                <button class="btn-logout" id="btnLogout">로그아웃</button>
-            </div>
-
             <!-- Home Screen -->
             <div class="screen active" id="homeScreen">
                 <div class="welcome-message bible-verse-banner">
                     <p class="bible-verse" id="bibleVerse"></p>
                     <p class="bible-reference" id="bibleReference"></p>
+                </div>
+                <div class="weather-banner" id="weatherBanner">
+                    <span id="weatherDate"></span>
+                    <span class="weather-divider">|</span>
+                    <span id="weatherTemp"></span>
+                    <span class="weather-divider">|</span>
+                    <span id="weatherHumidity"></span>
+                    <span class="weather-divider">|</span>
+                    <span id="weatherDust"></span>
                 </div>
                 <nav class="channel-list">
                     <button class="channel-btn" data-channel="schedule">
@@ -97,6 +97,14 @@
                         <span class="channel-arrow">›</span>
                     </button>
                 </nav>
+                <!-- User Info Bar -->
+                <div class="user-bar" id="userBar">
+                    <div class="user-info">
+                        <img class="user-avatar" id="userAvatar" src="" alt="">
+                        <span class="user-name" id="userName"></span>
+                    </div>
+                    <button class="btn-logout" id="btnLogout">로그아웃</button>
+                </div>
             </div>
 
             <!-- Schedule Screen (방학 일정) -->

@@ -51,6 +51,53 @@
         }
     }
 
+    // ===== Weather Display =====
+    function displayWeather() {
+        const dateEl = document.getElementById('weatherDate');
+        const tempEl = document.getElementById('weatherTemp');
+        const humidityEl = document.getElementById('weatherHumidity');
+        const dustEl = document.getElementById('weatherDust');
+
+        if (!dateEl) return;
+
+        // 날짜 표시
+        const now = new Date();
+        const days = ['일', '월', '화', '수', '목', '금', '토'];
+        dateEl.textContent = `${now.getMonth() + 1}/${now.getDate()}(${days[now.getDay()]})`;
+
+        // 날씨 API 호출 (Open-Meteo - 무료, API키 불필요)
+        // 서울 좌표: 37.5665, 126.9780
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,relative_humidity_2m&timezone=Asia/Seoul')
+            .then(res => res.json())
+            .then(data => {
+                if (data.current) {
+                    tempEl.textContent = `${Math.round(data.current.temperature_2m)}°C`;
+                    humidityEl.textContent = `습도 ${data.current.relative_humidity_2m}%`;
+                }
+            })
+            .catch(() => {
+                tempEl.textContent = '--°C';
+                humidityEl.textContent = '습도 --%';
+            });
+
+        // 미세먼지 API (에어코리아 대신 간단한 표시)
+        fetch('https://api.open-meteo.com/v1/air-quality?latitude=37.5665&longitude=126.9780&current=pm10,pm2_5&timezone=Asia/Seoul')
+            .then(res => res.json())
+            .then(data => {
+                if (data.current) {
+                    const pm10 = data.current.pm10;
+                    let status = '좋음';
+                    if (pm10 > 150) status = '매우나쁨';
+                    else if (pm10 > 80) status = '나쁨';
+                    else if (pm10 > 30) status = '보통';
+                    dustEl.textContent = `미세먼지 ${status}`;
+                }
+            })
+            .catch(() => {
+                dustEl.textContent = '미세먼지 --';
+            });
+    }
+
     // ===== Channel Definitions =====
     const CHANNELS = {
         schedule: {
@@ -1338,6 +1385,7 @@
         initEventListeners();
         initDarkMode();
         displayRandomBibleVerse();
+        displayWeather();
         auth.onAuthStateChanged(handleAuthStateChanged);
     }
 

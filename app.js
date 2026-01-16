@@ -37,7 +37,7 @@
             category: 'study',
             categoryName: '진단평가',
             fields: [
-                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'page', label: '학습한 내용', type: 'text', required: false },
                 { name: 'score', label: '점수', type: 'text', required: false },
                 { name: 'content', label: '메모', type: 'textarea', required: false }
             ]
@@ -50,7 +50,7 @@
             category: 'study',
             categoryName: '수학',
             fields: [
-                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'page', label: '학습한 내용', type: 'text', required: false },
                 { name: 'score', label: '점수', type: 'text', required: false },
                 { name: 'content', label: '메모', type: 'textarea', required: false }
             ]
@@ -63,7 +63,7 @@
             category: 'study',
             categoryName: '계산법',
             fields: [
-                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'page', label: '학습한 내용', type: 'text', required: false },
                 { name: 'score', label: '점수', type: 'text', required: false },
                 { name: 'content', label: '메모', type: 'textarea', required: false }
             ]
@@ -76,7 +76,7 @@
             category: 'study',
             categoryName: '영문법',
             fields: [
-                { name: 'page', label: '교과서 페이지', type: 'text', required: false },
+                { name: 'page', label: '학습한 내용', type: 'text', required: false },
                 { name: 'score', label: '점수', type: 'text', required: false },
                 { name: 'content', label: '메모', type: 'textarea', required: false }
             ]
@@ -668,7 +668,7 @@
         } else if (channel.id === 'exercise') {
             return entry.exerciseType || '운동';
         } else if (channel.id.startsWith('study-')) {
-            if (entry.page) return `p.${entry.page}`;
+            if (entry.page) return entry.page;
             if (entry.subject) return entry.subject;
             return channel.categoryName;
         }
@@ -699,8 +699,8 @@
                 // 상세 정보 생성
                 let details = [];
                 if (entry.channel.id.startsWith('study-')) {
-                    if (entry.page) details.push(`p.${entry.page}`);
-                    if (entry.score) details.push(`점수: ${entry.score}점`);
+                    if (entry.page) details.push(entry.page);
+                    if (entry.score) details.push(`${entry.score}점`);
                     if (entry.subject) details.push(entry.subject);
                 } else if (entry.channel.id === 'reading') {
                     if (entry.bookTitle) details.push(entry.bookTitle);
@@ -814,7 +814,7 @@
                 // 채널별 상세 정보 생성
                 let details = [];
                 if (channel.id.startsWith('study-')) {
-                    if (entry.page) details.push(`📄 ${entry.page}쪽`);
+                    if (entry.page) details.push(`📚 ${entry.page}`);
                     if (entry.score) details.push(`📊 ${entry.score}점`);
                     if (entry.subject) details.push(`📚 ${entry.subject}`);
                 } else if (channel.id === 'reading') {

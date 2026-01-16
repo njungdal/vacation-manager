@@ -53,49 +53,35 @@
 
     // ===== Weather Display =====
     function displayWeather() {
-        const dateEl = document.getElementById('weatherDate');
-        const tempEl = document.getElementById('weatherTemp');
-        const humidityEl = document.getElementById('weatherHumidity');
-        const dustEl = document.getElementById('weatherDust');
+        const todayEl = document.getElementById('weatherToday');
+        const tomorrowEl = document.getElementById('weatherTomorrow');
+        if (!todayEl) return;
 
-        if (!dateEl) return;
-
-        // 날짜 표시
         const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
         const days = ['일', '월', '화', '수', '목', '금', '토'];
-        dateEl.textContent = `${now.getMonth() + 1}/${now.getDate()}(${days[now.getDay()]})`;
+        const todayStr = `오늘 ${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]})`;
+        const tomorrowStr = `내일 ${tomorrow.getMonth()+1}/${tomorrow.getDate()}(${days[tomorrow.getDay()]})`;
 
-        // 날씨 API 호출 (Open-Meteo - 무료, API키 불필요)
-        // 서울 좌표: 37.5665, 126.9780
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,relative_humidity_2m&timezone=Asia/Seoul')
-            .then(res => res.json())
-            .then(data => {
-                if (data.current) {
-                    tempEl.textContent = `${Math.round(data.current.temperature_2m)}°C`;
-                    humidityEl.textContent = `습도 ${data.current.relative_humidity_2m}%`;
-                }
-            })
-            .catch(() => {
-                tempEl.textContent = '--°C';
-                humidityEl.textContent = '습도 --%';
-            });
+        todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>로딩중...</span>`;
+        tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>로딩중...</span>`;
 
-        // 미세먼지 API (에어코리아 대신 간단한 표시)
-        fetch('https://api.open-meteo.com/v1/air-quality?latitude=37.5665&longitude=126.9780&current=pm10,pm2_5&timezone=Asia/Seoul')
-            .then(res => res.json())
-            .then(data => {
-                if (data.current) {
-                    const pm10 = data.current.pm10;
-                    let status = '좋음';
-                    if (pm10 > 150) status = '매우나쁨';
-                    else if (pm10 > 80) status = '나쁨';
-                    else if (pm10 > 30) status = '보통';
-                    dustEl.textContent = `미세먼지 ${status}`;
-                }
-            })
-            .catch(() => {
-                dustEl.textContent = '미세먼지 --';
-            });
+        // 날씨+미세먼지 API
+        Promise.all([
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json()),
+            fetch('https://api.open-meteo.com/v1/air-quality?latitude=37.5665&longitude=126.9780&current=pm10&hourly=pm10&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json())
+        ]).then(([weather, air]) => {
+            const getDust = (pm10) => pm10 > 150 ? '매우나쁨' : pm10 > 80 ? '나쁨' : pm10 > 30 ? '보통' : '좋음';
+            const todayDust = getDust(air.current?.pm10 || 0);
+            const tomorrowDust = getDust(air.hourly?.pm10?.[24] || 0);
+
+            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>${Math.round(weather.current?.temperature_2m||0)}°C</span><span>|</span><span>습도 ${weather.current?.relative_humidity_2m||0}%</span><span>|</span><span>미세먼지 ${todayDust}</span>`;
+            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>${Math.round(weather.daily?.temperature_2m_max?.[1]||0)}°/${Math.round(weather.daily?.temperature_2m_min?.[1]||0)}°</span><span>|</span><span>습도 ${Math.round(weather.daily?.relative_humidity_2m_mean?.[1]||0)}%</span><span>|</span><span>미세먼지 ${tomorrowDust}</span>`;
+        }).catch(() => {
+            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>날씨 정보 없음</span>`;
+            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>날씨 정보 없음</span>`;
+        });
     }
 
     // ===== Channel Definitions =====

@@ -159,7 +159,14 @@ html, body {
 
 /* Bible Verse Banner */
 .bible-verse-banner {
+    background: linear-gradient(135deg, #F5F0E6 0%, #EDE4D3 100%) !important;
     padding: var(--spacing-lg) var(--spacing-md);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.bible-verse-banner .bible-verse,
+.bible-verse-banner .bible-reference {
+    color: #4A4035 !important;
 }
 
 .bible-verse {
@@ -175,22 +182,33 @@ html, body {
     font-family: 'Nanum Myeongjo', serif;
     font-size: 0.85rem;
     font-weight: 700;
-    opacity: 0.9;
 }
 
 /* Weather Banner */
 .weather-banner {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs) var(--spacing-sm);
+    flex-direction: column;
+    gap: var(--spacing-xs);
     padding: var(--spacing-sm) var(--spacing-md);
     background-color: var(--surface-secondary);
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.weather-banner:hover {
+    background-color: var(--border-color);
+}
+
+.weather-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .weather-divider {

@@ -1,6 +1,6 @@
 // Siyoon's 2026 Winter Vacation Manager
 // Firebase-enabled Application
-// v1.1 - Bible verse update
+// v1.2 - Weather update
 
 (function() {
     'use strict';
@@ -67,17 +67,19 @@
         todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>로딩중...</span>`;
         tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>로딩중...</span>`;
 
-        // 날씨+미세먼지 API
+        // 날씨+미세먼지 API (강수확률 포함)
         Promise.all([
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json()),
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,relative_humidity_2m,precipitation&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,precipitation_sum&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json()),
             fetch('https://api.open-meteo.com/v1/air-quality?latitude=37.5665&longitude=126.9780&current=pm10&hourly=pm10&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json())
         ]).then(([weather, air]) => {
             const getDust = (pm10) => pm10 > 150 ? '매우나쁨' : pm10 > 80 ? '나쁨' : pm10 > 30 ? '보통' : '좋음';
             const todayDust = getDust(air.current?.pm10 || 0);
             const tomorrowDust = getDust(air.hourly?.pm10?.[24] || 0);
+            const todayRain = (weather.current?.precipitation || 0) > 0 ? '🌧️비' : '☀️맑음';
+            const tomorrowRain = (weather.daily?.precipitation_sum?.[1] || 0) > 0.5 ? '🌧️비' : '☀️맑음';
 
-            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>${Math.round(weather.current?.temperature_2m||0)}°C</span><span>|</span><span>습도 ${weather.current?.relative_humidity_2m||0}%</span><span>|</span><span>미세먼지 ${todayDust}</span>`;
-            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>${Math.round(weather.daily?.temperature_2m_max?.[1]||0)}°/${Math.round(weather.daily?.temperature_2m_min?.[1]||0)}°</span><span>|</span><span>습도 ${Math.round(weather.daily?.relative_humidity_2m_mean?.[1]||0)}%</span><span>|</span><span>미세먼지 ${tomorrowDust}</span>`;
+            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>${Math.round(weather.current?.temperature_2m||0)}°C</span><span>|</span><span>${todayRain}</span><span>|</span><span>습도${weather.current?.relative_humidity_2m||0}%</span><span>|</span><span>${todayDust}</span>`;
+            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>${Math.round(weather.daily?.temperature_2m_max?.[1]||0)}°/${Math.round(weather.daily?.temperature_2m_min?.[1]||0)}°</span><span>|</span><span>${tomorrowRain}</span><span>|</span><span>습도${Math.round(weather.daily?.relative_humidity_2m_mean?.[1]||0)}%</span><span>|</span><span>${tomorrowDust}</span>`;
         }).catch(() => {
             todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>날씨 정보 없음</span>`;
             tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>날씨 정보 없음</span>`;

@@ -1298,3 +1298,349 @@ html, body {
 .btn-login-from-modal:hover {
     background-color: var(--primary-dark);
 }
+
+/* ===== iPad / Tablet Styles ===== */
+
+/* iPad Portrait (768px ~ 1024px) */
+@media screen and (min-width: 768px) {
+    .app-container {
+        max-width: 768px;
+    }
+
+    .app-header {
+        padding: var(--spacing-lg) var(--spacing-xl);
+    }
+
+    .app-title {
+        font-size: 1.3rem;
+    }
+
+    .app-main {
+        padding: var(--spacing-lg);
+    }
+
+    /* Channel List - 2 column grid */
+    .channel-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .sub-channel-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .channel-btn {
+        padding: var(--spacing-lg);
+    }
+
+    .channel-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.8rem;
+    }
+
+    .channel-name {
+        font-size: 1.1rem;
+    }
+
+    /* Welcome & Bible Verse */
+    .welcome-message {
+        padding: var(--spacing-xl);
+    }
+
+    .welcome-message p {
+        font-size: 1.1rem;
+    }
+
+    .bible-verse-banner {
+        padding: var(--spacing-xl) var(--spacing-lg);
+    }
+
+    .bible-verse {
+        font-size: 1.2rem;
+    }
+
+    .bible-reference {
+        font-size: 0.95rem;
+    }
+
+    /* Weather Banner */
+    .weather-banner {
+        font-size: 0.85rem;
+        padding: var(--spacing-md);
+        gap: var(--spacing-xs);
+    }
+
+    .weather-row {
+        gap: var(--spacing-sm);
+    }
+
+    /* Calendar */
+    .calendar-container {
+        padding: var(--spacing-lg);
+    }
+
+    .calendar-day {
+        min-height: 90px;
+        padding: var(--spacing-sm);
+    }
+
+    .day-number {
+        font-size: 1.1rem;
+    }
+
+    .entry-tag {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
+
+    .entry-more {
+        font-size: 0.65rem;
+    }
+
+    .calendar-month-year {
+        font-size: 1.3rem;
+    }
+
+    .calendar-weekday {
+        font-size: 0.9rem;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .calendar-legend {
+        gap: var(--spacing-md);
+        padding: var(--spacing-lg);
+    }
+
+    .legend-item {
+        font-size: 0.85rem;
+    }
+
+    .legend-color {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Modal - Center aligned for tablet */
+    .modal-overlay {
+        align-items: center;
+    }
+
+    .modal {
+        border-radius: var(--radius-xl);
+        max-width: 600px;
+        max-height: 85vh;
+    }
+
+    .modal-header {
+        padding: var(--spacing-xl);
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+    }
+
+    .modal-body {
+        padding: var(--spacing-xl);
+    }
+
+    .modal-footer {
+        padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
+    }
+
+    .form-input, .form-textarea {
+        font-size: 1.05rem;
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .btn {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: 1.05rem;
+    }
+
+    /* User Bar */
+    .user-bar {
+        padding: var(--spacing-lg);
+    }
+
+    .user-avatar {
+        width: 44px;
+        height: 44px;
+    }
+
+    .user-name {
+        font-size: 1rem;
+    }
+
+    .btn-logout {
+        font-size: 0.9rem;
+        padding: var(--spacing-sm) var(--spacing-lg);
+    }
+
+    /* Login */
+    .login-container {
+        max-width: 400px;
+        padding: var(--spacing-xl) calc(var(--spacing-xl) * 1.5);
+    }
+
+    .login-icon {
+        font-size: 5rem;
+    }
+
+    .login-title {
+        font-size: 1.5rem;
+    }
+
+    .login-subtitle {
+        font-size: 1rem;
+    }
+
+    .btn-google-login, .btn-guest-login {
+        font-size: 1.1rem;
+        padding: var(--spacing-lg);
+    }
+
+    /* Screen Header */
+    .screen-header {
+        padding: var(--spacing-md) 0;
+    }
+
+    .screen-title {
+        font-size: 1.3rem;
+    }
+
+    .back-btn {
+        font-size: 1.1rem;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+        bottom: var(--spacing-xl);
+        right: var(--spacing-xl);
+    }
+}
+
+/* iPad Landscape (1024px and above) */
+@media screen and (min-width: 1024px) {
+    .app-container {
+        max-width: 1024px;
+    }
+
+    .app-title {
+        font-size: 1.4rem;
+    }
+
+    /* Channel List - 3 column grid */
+    .channel-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .sub-channel-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Full Calendar - Side by side */
+    .calendar-full {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-lg);
+    }
+
+    .calendar-day {
+        min-height: 100px;
+    }
+
+    .entry-tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+
+    /* Modal */
+    .modal {
+        max-width: 700px;
+    }
+}
+
+/* iPad Pro 12.9" and larger screens */
+@media screen and (min-width: 1200px) {
+    .app-container {
+        max-width: 1200px;
+    }
+
+    /* Channel List - 4 column grid */
+    .channel-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .sub-channel-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .calendar-day {
+        min-height: 110px;
+    }
+
+    .day-number {
+        font-size: 1.2rem;
+    }
+
+    .entry-tag {
+        font-size: 0.8rem;
+    }
+}
+
+/* iPad Landscape specific (height constraint) */
+@media screen and (min-width: 1024px) and (max-height: 900px) {
+    .app-header {
+        padding: var(--spacing-md) var(--spacing-xl);
+    }
+
+    .app-main {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .welcome-message {
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .bible-verse-banner {
+        padding: var(--spacing-md);
+    }
+
+    .bible-verse {
+        font-size: 1.05rem;
+    }
+
+    .channel-btn {
+        padding: var(--spacing-md);
+    }
+
+    .channel-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+    }
+
+    .calendar-day {
+        min-height: 80px;
+    }
+
+    .modal {
+        max-height: 90vh;
+    }
+
+    .modal-header {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .modal-body {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+}

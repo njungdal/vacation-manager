@@ -696,11 +696,29 @@
             allEntries.forEach(entry => {
                 const label = getEntryLabel(entry);
                 const channelName = entry.channel.name;
+                // 상세 정보 생성
+                let details = [];
+                if (entry.channel.id.startsWith('study-')) {
+                    if (entry.page) details.push(`p.${entry.page}`);
+                    if (entry.score) details.push(`점수: ${entry.score}점`);
+                    if (entry.subject) details.push(entry.subject);
+                } else if (entry.channel.id === 'reading') {
+                    if (entry.bookTitle) details.push(entry.bookTitle);
+                    if (entry.pages) details.push(`${entry.pages}쪽`);
+                } else if (entry.channel.id === 'exercise') {
+                    if (entry.exerciseType) details.push(entry.exerciseType);
+                    if (entry.duration) details.push(entry.duration);
+                } else if (entry.channel.id === 'phone') {
+                    if (entry.duration) details.push(entry.duration);
+                } else if (entry.channel.id === 'game') {
+                    if (entry.gameName) details.push(entry.gameName);
+                }
+                if (entry.content) details.push(entry.content.substring(0, 50) + (entry.content.length > 50 ? '...' : ''));
+
                 html += `
                     <div class="entry-item" style="border-left-color: var(--color-${entry.channel.category})">
                         <div class="entry-item-content">
-                            <strong>[${channelName}]</strong> ${label}
-                            ${entry.content ? `<br><small>${entry.content.substring(0, 50)}${entry.content.length > 50 ? '...' : ''}</small>` : ''}
+                            <strong>[${channelName}]</strong> ${details.length > 0 ? details.join(' / ') : label}
                         </div>
                         ${!state.isGuest ? `<button class="entry-item-delete" data-channel="${entry.channelId}" data-id="${entry.id}">&times;</button>` : ''}
                     </div>
@@ -993,7 +1011,9 @@
             headers = headers.concat(Array.from(allFields));
 
             Object.keys(state.data).forEach(key => {
-                const [chId, date] = key.split(/-(.+)/);
+                // 날짜는 항상 YYYY-MM-DD 형식 (10자)이므로 뒤에서 추출
+                const date = key.slice(-10);
+                const chId = key.slice(0, -11); // 날짜 앞의 '-' 포함해서 제거
                 const channel = CHANNELS[chId];
                 if (!channel) return;
 

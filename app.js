@@ -78,8 +78,8 @@
             const todayRain = (weather.current?.precipitation || 0) > 0 ? '🌧️비' : '☀️맑음';
             const tomorrowRain = (weather.daily?.precipitation_sum?.[1] || 0) > 0.5 ? '🌧️비' : '☀️맑음';
 
-            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>${Math.round(weather.current?.temperature_2m||0)}°C</span><span>|</span><span>${todayRain}</span><span>|</span><span>습도${weather.current?.relative_humidity_2m||0}%</span><span>|</span><span>${todayDust}</span>`;
-            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>${Math.round(weather.daily?.temperature_2m_max?.[1]||0)}°/${Math.round(weather.daily?.temperature_2m_min?.[1]||0)}°</span><span>|</span><span>${tomorrowRain}</span><span>|</span><span>습도${Math.round(weather.daily?.relative_humidity_2m_mean?.[1]||0)}%</span><span>|</span><span>${tomorrowDust}</span>`;
+            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>${Math.round(weather.current?.temperature_2m||0)}°C</span><span>|</span><span>${todayRain}</span><span>|</span><span>습도${weather.current?.relative_humidity_2m||0}%</span><span>|</span><span>미세먼지 ${todayDust}</span>`;
+            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>${Math.round(weather.daily?.temperature_2m_max?.[1]||0)}°/${Math.round(weather.daily?.temperature_2m_min?.[1]||0)}°</span><span>|</span><span>${tomorrowRain}</span><span>|</span><span>습도${Math.round(weather.daily?.relative_humidity_2m_mean?.[1]||0)}%</span><span>|</span><span>미세먼지 ${tomorrowDust}</span>`;
         }).catch(() => {
             todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>날씨 정보 없음</span>`;
             tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>날씨 정보 없음</span>`;

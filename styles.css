@@ -90,9 +90,9 @@ html, body {
     position: relative;
 }
 
-/* Header - KakaoBank style */
+/* Header - Emerald style */
 .app-header {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, #50C9B5 0%, #3AAFA9 100%);
     padding: var(--spacing-lg) var(--spacing-lg);
     position: sticky;
     top: 0;

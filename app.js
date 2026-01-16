@@ -472,6 +472,7 @@
     function goHome() {
         showScreen('home');
         state.currentMonth = 0;
+        displayRandomBibleVerse();
     }
 
     // ===== Calendar Rendering =====

@@ -1,6 +1,6 @@
 // Siyoon's 2026 Winter Vacation Manager
 // Firebase-enabled Application
-// v1.3 - Swipe back gesture
+// v1.4 - Swipe back gesture fix
 
 (function() {
     'use strict';
@@ -1312,48 +1312,60 @@
     // ===== Swipe Back Gesture (Mobile) =====
     let touchStartX = 0;
     let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
+    let isSwiping = false;
 
     function initSwipeGesture() {
         document.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            // 왼쪽 가장자리 50px 이내에서 시작할 때만 스와이프 추적
+            isSwiping = touchStartX < 50;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            // 스와이프 중에는 기본 동작 방지하지 않음 (passive)
         }, { passive: true });
 
         document.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            handleSwipeGesture();
+            if (!isSwiping) return;
+
+            const touch = e.changedTouches[0];
+            const touchEndX = touch.clientX;
+            const touchEndY = touch.clientY;
+            const swipeDistanceX = touchEndX - touchStartX;
+            const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+
+            // 오른쪽으로 80px 이상 스와이프, 세로 이동 100px 이하
+            if (swipeDistanceX > 80 && swipeDistanceY < 100) {
+                handleSwipeBack();
+            }
+
+            isSwiping = false;
         }, { passive: true });
     }
 
-    function handleSwipeGesture() {
-        const swipeDistanceX = touchEndX - touchStartX;
-        const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+    function handleSwipeBack() {
+        // 모달이 열려있으면 모달 닫기
+        if (elements.modalOverlay.classList.contains('active')) {
+            closeModal();
+            return;
+        }
 
-        // 조건: 왼쪽 가장자리에서 시작 (100px 이내), 오른쪽으로 100px 이상 스와이프, 세로 이동 50px 이하
-        if (touchStartX < 100 && swipeDistanceX > 100 && swipeDistanceY < 50) {
-            // 모달이 열려있으면 모달 닫기
-            if (elements.modalOverlay.classList.contains('active')) {
-                closeModal();
-                return;
-            }
-
-            // 현재 화면에 따라 뒤로가기 처리
-            if (state.currentScreen === 'home') {
-                // 홈 화면에서는 아무 동작 안함
-                return;
-            } else if (state.currentScreen === 'study') {
-                // 학습 목록에서 홈으로
-                goHome();
-            } else if (state.currentChannel && state.currentChannel.startsWith('study-')) {
-                // 학습 상세에서 학습 목록으로
-                showScreen('study');
-            } else {
-                // 다른 채널에서 홈으로
-                goHome();
-            }
+        // 현재 화면에 따라 뒤로가기 처리
+        if (state.currentScreen === 'home') {
+            // 홈 화면에서는 아무 동작 안함
+            return;
+        } else if (state.currentScreen === 'study') {
+            // 학습 목록에서 홈으로
+            goHome();
+        } else if (state.currentChannel && state.currentChannel.startsWith('study-')) {
+            // 학습 상세에서 학습 목록으로
+            showScreen('study');
+        } else {
+            // 다른 채널에서 홈으로
+            goHome();
         }
     }
 

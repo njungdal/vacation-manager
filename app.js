@@ -172,12 +172,14 @@
     // ===== State Management =====
     let state = {
         user: null,
+        isGuest: false,
         currentScreen: 'home',
         currentChannel: null,
         currentMonth: 0,
         selectedDate: null,
         editingEntryId: null,
-        data: {}
+        data: {},
+        darkMode: localStorage.getItem('darkMode') === 'true'
     };
 
     // ===== DOM Elements =====
@@ -186,6 +188,9 @@
         appMain: document.getElementById('appMain'),
         loginScreen: document.getElementById('loginScreen'),
         btnGoogleLogin: document.getElementById('btnGoogleLogin'),
+        btnGuestLogin: document.getElementById('btnGuestLogin'),
+        guestBanner: document.getElementById('guestBanner'),
+        btnGuestToLogin: document.getElementById('btnGuestToLogin'),
         userBar: document.getElementById('userBar'),
         userAvatar: document.getElementById('userAvatar'),
         userName: document.getElementById('userName'),
@@ -198,7 +203,8 @@
         modalClose: document.getElementById('modalClose'),
         btnSave: document.getElementById('btnSave'),
         btnDelete: document.getElementById('btnDelete'),
-        loadingOverlay: document.getElementById('loadingOverlay')
+        loadingOverlay: document.getElementById('loadingOverlay'),
+        themeToggle: document.getElementById('themeToggle')
     };
 
     // ===== Loading =====
@@ -214,17 +220,60 @@
     function handleAuthStateChanged(user) {
         if (user) {
             state.user = user;
+            state.isGuest = false;
             elements.loginScreen.style.display = 'none';
             elements.appMain.style.display = 'block';
+            elements.guestBanner.style.display = 'none';
+            elements.userBar.style.display = 'flex';
             elements.userAvatar.src = user.photoURL || '';
             elements.userName.textContent = user.displayName || user.email;
             loadAllData();
-        } else {
+        } else if (!state.isGuest) {
             state.user = null;
             state.data = {};
             elements.loginScreen.style.display = 'flex';
             elements.appMain.style.display = 'none';
         }
+    }
+
+    // ===== Guest Mode =====
+    async function enterGuestMode() {
+        state.isGuest = true;
+        state.user = null;
+        elements.loginScreen.style.display = 'none';
+        elements.appMain.style.display = 'block';
+        elements.guestBanner.style.display = 'flex';
+        elements.userBar.style.display = 'none';
+        await loadGuestData();
+    }
+
+    async function loadGuestData() {
+        showLoading();
+        try {
+            const sharedDoc = await db.collection('shared').doc(SHARED_DOC_ID).get();
+            if (sharedDoc.exists) {
+                state.data = sharedDoc.data().entries || {};
+            } else {
+                state.data = {};
+            }
+            if (state.currentChannel) {
+                initCalendar(state.currentChannel);
+            }
+        } catch (error) {
+            console.error('Error loading guest data:', error);
+            state.data = {};
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function exitGuestMode() {
+        state.isGuest = false;
+        state.data = {};
+        elements.guestBanner.style.display = 'none';
+        elements.loginScreen.style.display = 'flex';
+        elements.appMain.style.display = 'none';
+        showScreen('home');
     }
 
     async function loginWithGoogle() {
@@ -653,7 +702,7 @@
                             <strong>[${channelName}]</strong> ${label}
                             ${entry.content ? `<br><small>${entry.content.substring(0, 50)}${entry.content.length > 50 ? '...' : ''}</small>` : ''}
                         </div>
-                        <button class="entry-item-delete" data-channel="${entry.channelId}" data-id="${entry.id}">&times;</button>
+                        ${!state.isGuest ? `<button class="entry-item-delete" data-channel="${entry.channelId}" data-id="${entry.id}">&times;</button>` : ''}
                     </div>
                 `;
             });
@@ -661,38 +710,64 @@
             html += '</div>';
         }
 
-        html += `
-            <div class="form-group">
-                <label class="form-label">새 일정 추가</label>
-            </div>
-            <div class="form-group">
-                <label class="form-label">일정 제목</label>
-                <input type="text" class="form-input" name="title" placeholder="일정 제목을 입력하세요">
-            </div>
-            <div class="form-group">
-                <label class="form-label">일정 내용</label>
-                <textarea class="form-textarea" name="content" placeholder="일정 내용을 입력하세요"></textarea>
-            </div>
-        `;
+        // Guest mode: show login prompt instead of edit form
+        if (state.isGuest) {
+            if (allEntries.length === 0) {
+                html += '<div class="entries-list"><div class="entries-list-title">등록된 일정이 없습니다</div></div>';
+            }
+            html += `
+                <div class="login-required-notice">
+                    <p>일정을 추가하려면 로그인이 필요합니다</p>
+                    <button class="btn-login-from-modal" id="btnLoginFromModal">Google로 로그인</button>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="form-group">
+                    <label class="form-label">새 일정 추가</label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">일정 제목</label>
+                    <input type="text" class="form-input" name="title" placeholder="일정 제목을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">일정 내용</label>
+                    <textarea class="form-textarea" name="content" placeholder="일정 내용을 입력하세요"></textarea>
+                </div>
+            `;
+        }
 
         elements.modalBody.innerHTML = html;
         elements.btnDelete.style.display = 'none';
+        elements.btnSave.style.display = state.isGuest ? 'none' : 'block';
         elements.modalOverlay.classList.add('active');
 
-        elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const channelId = btn.dataset.channel;
-                const entryId = btn.dataset.id;
-                if (confirm('이 일정을 삭제하시겠습니까?')) {
-                    showLoading();
-                    await deleteEntry(channelId, date, entryId);
-                    hideLoading();
-                    openScheduleModal(date);
-                    refreshAllCalendars();
-                }
+        // Guest login button in modal
+        const btnLoginFromModal = elements.modalBody.querySelector('#btnLoginFromModal');
+        if (btnLoginFromModal) {
+            btnLoginFromModal.addEventListener('click', () => {
+                closeModal();
+                exitGuestMode();
+                loginWithGoogle();
             });
-        });
+        }
+
+        if (!state.isGuest) {
+            elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const channelId = btn.dataset.channel;
+                    const entryId = btn.dataset.id;
+                    if (confirm('이 일정을 삭제하시겠습니까?')) {
+                        showLoading();
+                        await deleteEntry(channelId, date, entryId);
+                        hideLoading();
+                        openScheduleModal(date);
+                        refreshAllCalendars();
+                    }
+                });
+            });
+        }
     }
 
     function openEntryModal(channelId, date, entryId = null) {
@@ -721,64 +796,93 @@
                 const label = getEntryLabel({ ...entry, channel });
                 html += `
                     <div class="entry-item">
-                        <div class="entry-item-content" data-edit="${entry.id}" style="cursor: pointer;">
+                        <div class="entry-item-content" ${!state.isGuest ? `data-edit="${entry.id}" style="cursor: pointer;"` : ''}>
                             ${label}
                             ${entry.content ? `<br><small>${entry.content.substring(0, 30)}${entry.content.length > 30 ? '...' : ''}</small>` : ''}
                         </div>
-                        <button class="entry-item-delete" data-id="${entry.id}">&times;</button>
+                        ${!state.isGuest ? `<button class="entry-item-delete" data-id="${entry.id}">&times;</button>` : ''}
                     </div>
                 `;
             });
 
             html += '</div>';
-            html += '<div class="form-group"><label class="form-label">새로 추가</label></div>';
         }
 
-        channel.fields.forEach(field => {
-            const value = editingEntry ? (editingEntry[field.name] || '') : '';
-            if (field.type === 'textarea') {
-                html += `
-                    <div class="form-group">
-                        <label class="form-label">${field.label}</label>
-                        <textarea class="form-textarea" name="${field.name}"
-                            placeholder="${field.label}을(를) 입력하세요">${value}</textarea>
-                    </div>
-                `;
-            } else {
-                html += `
-                    <div class="form-group">
-                        <label class="form-label">${field.label}</label>
-                        <input type="${field.type}" class="form-input" name="${field.name}"
-                            value="${value}" placeholder="${field.label}을(를) 입력하세요">
-                    </div>
-                `;
+        // Guest mode: show login prompt instead of edit form
+        if (state.isGuest) {
+            if (entries.length === 0) {
+                html += '<div class="entries-list"><div class="entries-list-title">등록된 내용이 없습니다</div></div>';
             }
-        });
+            html += `
+                <div class="login-required-notice">
+                    <p>내용을 추가하려면 로그인이 필요합니다</p>
+                    <button class="btn-login-from-modal" id="btnLoginFromModal">Google로 로그인</button>
+                </div>
+            `;
+        } else {
+            if (!entryId && entries.length > 0) {
+                html += '<div class="form-group"><label class="form-label">새로 추가</label></div>';
+            }
 
-        elements.modalBody.innerHTML = html;
-        elements.btnDelete.style.display = entryId ? 'block' : 'none';
-        elements.btnDelete.disabled = !entryId;
-        elements.modalOverlay.classList.add('active');
-
-        elements.modalBody.querySelectorAll('[data-edit]').forEach(el => {
-            el.addEventListener('click', () => {
-                openEntryModal(channelId, date, el.dataset.edit);
-            });
-        });
-
-        elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const id = btn.dataset.id;
-                if (confirm('삭제하시겠습니까?')) {
-                    showLoading();
-                    await deleteEntry(channelId, date, id);
-                    hideLoading();
-                    openEntryModal(channelId, date);
-                    refreshCurrentCalendar();
+            channel.fields.forEach(field => {
+                const value = editingEntry ? (editingEntry[field.name] || '') : '';
+                if (field.type === 'textarea') {
+                    html += `
+                        <div class="form-group">
+                            <label class="form-label">${field.label}</label>
+                            <textarea class="form-textarea" name="${field.name}"
+                                placeholder="${field.label}을(를) 입력하세요">${value}</textarea>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="form-group">
+                            <label class="form-label">${field.label}</label>
+                            <input type="${field.type}" class="form-input" name="${field.name}"
+                                value="${value}" placeholder="${field.label}을(를) 입력하세요">
+                        </div>
+                    `;
                 }
             });
-        });
+        }
+
+        elements.modalBody.innerHTML = html;
+        elements.btnDelete.style.display = (!state.isGuest && entryId) ? 'block' : 'none';
+        elements.btnDelete.disabled = !entryId;
+        elements.btnSave.style.display = state.isGuest ? 'none' : 'block';
+        elements.modalOverlay.classList.add('active');
+
+        // Guest login button in modal
+        const btnLoginFromModal = elements.modalBody.querySelector('#btnLoginFromModal');
+        if (btnLoginFromModal) {
+            btnLoginFromModal.addEventListener('click', () => {
+                closeModal();
+                exitGuestMode();
+                loginWithGoogle();
+            });
+        }
+
+        if (!state.isGuest) {
+            elements.modalBody.querySelectorAll('[data-edit]').forEach(el => {
+                el.addEventListener('click', () => {
+                    openEntryModal(channelId, date, el.dataset.edit);
+                });
+            });
+
+            elements.modalBody.querySelectorAll('.entry-item-delete').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.id;
+                    if (confirm('삭제하시겠습니까?')) {
+                        showLoading();
+                        await deleteEntry(channelId, date, id);
+                        hideLoading();
+                        openEntryModal(channelId, date);
+                        refreshCurrentCalendar();
+                    }
+                });
+            });
+        }
     }
 
     function closeModal() {
@@ -1073,11 +1177,34 @@
         downloadStyledSheet(channelId);
     }
 
+    // ===== Dark Mode =====
+    function initDarkMode() {
+        if (state.darkMode) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            elements.themeToggle.textContent = '☀️';
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            elements.themeToggle.textContent = '🌙';
+        }
+    }
+
+    function toggleDarkMode() {
+        state.darkMode = !state.darkMode;
+        localStorage.setItem('darkMode', state.darkMode);
+        initDarkMode();
+    }
+
     // ===== Event Listeners =====
     function initEventListeners() {
         elements.appHeader.addEventListener('click', goHome);
         elements.btnGoogleLogin.addEventListener('click', loginWithGoogle);
+        elements.btnGuestLogin.addEventListener('click', enterGuestMode);
+        elements.btnGuestToLogin.addEventListener('click', () => {
+            exitGuestMode();
+            loginWithGoogle();
+        });
         elements.btnLogout.addEventListener('click', logout);
+        elements.themeToggle.addEventListener('click', toggleDarkMode);
 
         // 다운로드 버튼 이벤트
         document.querySelectorAll('.btn-download').forEach(btn => {
@@ -1129,6 +1256,7 @@
     // ===== Initialize =====
     function init() {
         initEventListeners();
+        initDarkMode();
         auth.onAuthStateChanged(handleAuthStateChanged);
     }
 

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
@@ -26,11 +26,20 @@
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
                     Google로 로그인
                 </button>
+                <button class="btn-guest-login" id="btnGuestLogin">
+                    👀 게스트로 둘러보기
+                </button>
             </div>
         </div>
 
         <!-- Main Content -->
         <main class="app-main" id="appMain" style="display: none;">
+            <!-- Guest Banner -->
+            <div class="guest-banner" id="guestBanner" style="display: none;">
+                <span class="guest-banner-text">게스트 모드 - 내용을 편집하려면 로그인하세요</span>
+                <button class="btn-guest-to-login" id="btnGuestToLogin">로그인</button>
+            </div>
+
             <!-- User Info Bar -->
             <div class="user-bar" id="userBar">
                 <div class="user-info">
@@ -94,7 +103,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">방학 일정</h2>
-                    <button class="btn-download" data-channel="all" title="전체 데이터 다운로드">📥</button>
+                    <button class="btn-download" data-channel="all" title="전체 데이터 다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="scheduleCalendar"></div>
             </div>
@@ -104,6 +119,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">지식 디딤돌</h2>
+                    <button class="btn-download" data-channel="study-all" title="학습 데이터 다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <nav class="sub-channel-list">
                     <button class="channel-btn sub" data-channel="study-basic">
@@ -132,6 +154,7 @@
                         <span class="channel-arrow">›</span>
                     </button>
                 </nav>
+                <div class="calendar-container" id="studyCalendar" style="margin-top: 16px;"></div>
             </div>
 
             <!-- Study Sub-Screens -->
@@ -139,7 +162,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">기초학력 진단평가</h2>
-                    <button class="btn-download" data-channel="study-basic" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="study-basic" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="studyBasicCalendar"></div>
             </div>
@@ -148,7 +177,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">만점왕 수학(6-1)</h2>
-                    <button class="btn-download" data-channel="study-math" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="study-math" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="studyMathCalendar"></div>
             </div>
@@ -157,7 +192,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">기적의 계산법</h2>
-                    <button class="btn-download" data-channel="study-calc" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="study-calc" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="studyCalcCalendar"></div>
             </div>
@@ -166,7 +207,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">초등영문법 3800제</h2>
-                    <button class="btn-download" data-channel="study-english" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="study-english" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="studyEnglishCalendar"></div>
             </div>
@@ -175,7 +222,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="study">‹ 뒤로</button>
                     <h2 class="screen-title">엘리하이</h2>
-                    <button class="btn-download" data-channel="study-elihi" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="study-elihi" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="studyEliHiCalendar"></div>
             </div>
@@ -185,7 +238,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">게임 정복기</h2>
-                    <button class="btn-download" data-channel="game" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="game" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="gameCalendar"></div>
             </div>
@@ -195,7 +254,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">1일 1독서</h2>
-                    <button class="btn-download" data-channel="reading" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="reading" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="readingCalendar"></div>
             </div>
@@ -205,7 +270,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">1일 1선행</h2>
-                    <button class="btn-download" data-channel="kindness" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="kindness" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="kindnessCalendar"></div>
             </div>
@@ -215,7 +286,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">1일 1운동</h2>
-                    <button class="btn-download" data-channel="exercise" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="exercise" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="exerciseCalendar"></div>
             </div>
@@ -225,7 +302,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">스마트폰 사용시간</h2>
-                    <button class="btn-download" data-channel="phone" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="phone" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="phoneCalendar"></div>
             </div>
@@ -235,7 +318,13 @@
                 <div class="screen-header">
                     <button class="back-btn" data-back="home">‹ 뒤로</button>
                     <h2 class="screen-title">특별한 일정</h2>
-                    <button class="btn-download" data-channel="special" title="다운로드">📥</button>
+                    <button class="btn-download" data-channel="special" title="다운로드">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V7.5L14.5 2Z" fill="#0F9D58"/>
+                            <path d="M14.5 2V7.5H20L14.5 2Z" fill="#87CEAC"/>
+                            <path d="M8 12H16V13.5H8V12ZM8 15H14V16.5H8V15ZM8 9H12V10.5H8V9Z" fill="white"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="calendar-container" id="specialCalendar"></div>
             </div>
@@ -263,6 +352,9 @@
             <div class="loading-spinner"></div>
             <p>동기화 중...</p>
         </div>
+
+        <!-- Dark Mode Toggle -->
+        <button class="theme-toggle" id="themeToggle" title="다크모드 전환">🌙</button>
     </div>
 
     <!-- Firebase SDK -->

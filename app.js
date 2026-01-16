@@ -15,6 +15,41 @@
         endDate: new Date(2026, 1, 28)
     };
 
+    // ===== Bible Verses =====
+    const BIBLE_VERSES = [
+        { verse: "여호와는 나의 목자시니 내게 부족함이 없으리로다", ref: "시편 23:1" },
+        { verse: "너는 마음을 다하여 여호와를 신뢰하고 네 명철을 의지하지 말라", ref: "잠언 3:5" },
+        { verse: "항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라", ref: "데살로니가전서 5:16-18" },
+        { verse: "내가 너희에게 분부한 것이 아니냐 강하고 담대하라 두려워하지 말며 놀라지 말라", ref: "여호수아 1:9" },
+        { verse: "하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니", ref: "요한복음 3:16" },
+        { verse: "내가 진실로 진실로 너희에게 이르노니 내 말을 듣고 또 나 보내신 이를 믿는 자는 영생을 얻었고", ref: "요한복음 5:24" },
+        { verse: "수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라", ref: "마태복음 11:28" },
+        { verse: "내가 여호와께 바라는 한 가지 일 그것을 구하리니 곧 내 평생에 여호와의 집에 살면서", ref: "시편 27:4" },
+        { verse: "여호와를 기뻐하라 그가 네 마음의 소원을 네게 이루어 주시리로다", ref: "시편 37:4" },
+        { verse: "믿음은 바라는 것들의 실상이요 보이지 않는 것들의 증거니", ref: "히브리서 11:1" },
+        { verse: "나의 영혼아 잠잠히 하나님만 바라라 무릇 나의 소망이 그로부터 나오는도다", ref: "시편 62:5" },
+        { verse: "오직 나는 여호와를 우러러보며 나를 구원하시는 하나님을 바라보나니", ref: "미가 7:7" },
+        { verse: "두려워하지 말라 내가 너와 함께 함이라 놀라지 말라 나는 네 하나님이 됨이라", ref: "이사야 41:10" },
+        { verse: "여호와는 나의 빛이요 나의 구원이시니 내가 누구를 두려워하리요", ref: "시편 27:1" },
+        { verse: "범사에 네 하나님 여호와를 인정하라 그리하면 네 길을 지도하시리라", ref: "잠언 3:6" },
+        { verse: "하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라", ref: "시편 46:1" },
+        { verse: "내 마음이 낙심될 때에 땅 끝에서부터 주께 부르짖으오리니", ref: "시편 61:2" },
+        { verse: "여호와께서 너를 지키사 모든 환난을 면하게 하시며 또 네 영혼을 지키시리로다", ref: "시편 121:7" },
+        { verse: "무엇이든지 내게 구하면 내가 행하리라", ref: "요한복음 14:14" },
+        { verse: "내가 너를 강하게 하리라 참으로 너를 도와주리라", ref: "이사야 41:10" }
+    ];
+
+    function displayRandomBibleVerse() {
+        const verseEl = document.getElementById('bibleVerse');
+        const refEl = document.getElementById('bibleReference');
+        if (verseEl && refEl) {
+            const randomIndex = Math.floor(Math.random() * BIBLE_VERSES.length);
+            const selected = BIBLE_VERSES[randomIndex];
+            verseEl.textContent = `"${selected.verse}"`;
+            refEl.textContent = `- ${selected.ref} -`;
+        }
+    }
+
     // ===== Channel Definitions =====
     const CHANNELS = {
         schedule: {
@@ -1300,6 +1335,7 @@
     function init() {
         initEventListeners();
         initDarkMode();
+        displayRandomBibleVerse();
         auth.onAuthStateChanged(handleAuthStateChanged);
     }
 

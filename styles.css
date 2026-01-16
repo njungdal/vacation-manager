@@ -157,6 +157,27 @@ html, body {
     font-weight: 600;
 }
 
+/* Bible Verse Banner */
+.bible-verse-banner {
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.bible-verse {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.7;
+    margin-bottom: var(--spacing-sm);
+    word-break: keep-all;
+}
+
+.bible-reference {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
 /* Channel List - Card style */
 .channel-list, .sub-channel-list {
     display: flex;

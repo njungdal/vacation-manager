@@ -811,12 +811,35 @@
             html += '<div class="entries-list-title">등록된 내용</div>';
 
             entries.forEach(entry => {
-                const label = getEntryLabel({ ...entry, channel });
+                // 채널별 상세 정보 생성
+                let details = [];
+                if (channel.id.startsWith('study-')) {
+                    if (entry.page) details.push(`📄 ${entry.page}쪽`);
+                    if (entry.score) details.push(`📊 ${entry.score}점`);
+                    if (entry.subject) details.push(`📚 ${entry.subject}`);
+                } else if (channel.id === 'reading') {
+                    if (entry.bookTitle) details.push(`📖 ${entry.bookTitle}`);
+                    if (entry.pages) details.push(`📄 ${entry.pages}쪽`);
+                } else if (channel.id === 'exercise') {
+                    if (entry.exerciseType) details.push(`🏃 ${entry.exerciseType}`);
+                    if (entry.duration) details.push(`⏱️ ${entry.duration}`);
+                } else if (channel.id === 'phone') {
+                    if (entry.duration) details.push(`⏱️ ${entry.duration}`);
+                } else if (channel.id === 'game') {
+                    if (entry.gameName) details.push(`🎮 ${entry.gameName}`);
+                } else if (channel.id === 'schedule' || channel.id === 'special') {
+                    if (entry.title) details.push(`📌 ${entry.title}`);
+                } else if (channel.id === 'kindness') {
+                    details.push('💝 선행 완료');
+                }
+                if (entry.content) details.push(`💬 ${entry.content}`);
+
+                const detailsHtml = details.length > 0 ? details.join('<br>') : channel.categoryName;
+
                 html += `
                     <div class="entry-item">
                         <div class="entry-item-content" ${!state.isGuest ? `data-edit="${entry.id}" style="cursor: pointer;"` : ''}>
-                            ${label}
-                            ${entry.content ? `<br><small>${entry.content.substring(0, 30)}${entry.content.length > 30 ? '...' : ''}</small>` : ''}
+                            ${detailsHtml}
                         </div>
                         ${!state.isGuest ? `<button class="entry-item-delete" data-id="${entry.id}">&times;</button>` : ''}
                     </div>

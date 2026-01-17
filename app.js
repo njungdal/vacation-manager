@@ -297,6 +297,7 @@
             elements.appMain.style.display = 'block';
             elements.guestBanner.style.display = 'none';
             elements.userBar.style.display = 'flex';
+            elements.themeToggle.style.display = 'flex';
             elements.userAvatar.src = user.photoURL || '';
             elements.userName.textContent = user.displayName || user.email;
             loadAllData();
@@ -306,6 +307,7 @@
             elements.appHeader.style.display = 'none';
             elements.loginScreen.style.display = 'flex';
             elements.appMain.style.display = 'none';
+            elements.themeToggle.style.display = 'none';
         }
     }
 
@@ -318,6 +320,7 @@
         elements.appMain.style.display = 'block';
         elements.guestBanner.style.display = 'flex';
         elements.userBar.style.display = 'none';
+        elements.themeToggle.style.display = 'flex';
         await loadGuestData();
     }
 
@@ -347,6 +350,7 @@
         elements.guestBanner.style.display = 'none';
         elements.loginScreen.style.display = 'flex';
         elements.appMain.style.display = 'none';
+        elements.themeToggle.style.display = 'none';
         showScreen('home');
     }
 

@@ -1362,7 +1362,8 @@
 
         // 현재 화면에 따라 뒤로가기 처리
         if (state.currentScreen === 'home') {
-            // 홈 화면에서는 아무 동작 안함
+            // 홈 화면에서는 로그아웃
+            logout();
             return;
         } else if (state.currentScreen === 'study') {
             // 학습 목록에서 홈으로

@@ -181,7 +181,6 @@ html, body {
 }
 
 .welcome-message p {
-    color: var(--primary-dark);
     font-size: 1rem;
     font-weight: 600;
 }

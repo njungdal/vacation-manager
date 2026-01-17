@@ -51,7 +51,7 @@
         }
     }
 
-    // ===== Weather Display =====
+    // ===== Weather Display (천안 기준) =====
     function displayWeather() {
         const todayEl = document.getElementById('weatherToday');
         const tomorrowEl = document.getElementById('weatherTomorrow');
@@ -64,13 +64,13 @@
         const todayStr = `오늘 ${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]})`;
         const tomorrowStr = `내일 ${tomorrow.getMonth()+1}/${tomorrow.getDate()}(${days[tomorrow.getDay()]})`;
 
-        todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>로딩중...</span>`;
-        tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>로딩중...</span>`;
+        todayEl.innerHTML = `<span>${todayStr}</span><span>로딩중...</span>`;
+        tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>로딩중...</span>`;
 
-        // 날씨+미세먼지 API (강수확률 포함)
+        // 천안 좌표: 36.8151, 127.1139
         Promise.all([
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,relative_humidity_2m,precipitation&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,precipitation_sum&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json()),
-            fetch('https://api.open-meteo.com/v1/air-quality?latitude=37.5665&longitude=126.9780&current=pm10&hourly=pm10&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json())
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=36.8151&longitude=127.1139&current=temperature_2m,relative_humidity_2m,precipitation&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,precipitation_sum&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json()),
+            fetch('https://api.open-meteo.com/v1/air-quality?latitude=36.8151&longitude=127.1139&current=pm10&hourly=pm10&timezone=Asia/Seoul&forecast_days=2').then(r=>r.json())
         ]).then(([weather, air]) => {
             const getDust = (pm10) => pm10 > 150 ? '매우나쁨' : pm10 > 80 ? '나쁨' : pm10 > 30 ? '보통' : '좋음';
             const todayDust = getDust(air.current?.pm10 || 0);
@@ -78,11 +78,11 @@
             const todayRain = (weather.current?.precipitation || 0) > 0 ? '🌧️비' : '☀️맑음';
             const tomorrowRain = (weather.daily?.precipitation_sum?.[1] || 0) > 0.5 ? '🌧️비' : '☀️맑음';
 
-            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>${Math.round(weather.current?.temperature_2m||0)}°C</span><span>|</span><span>${todayRain}</span><span>|</span><span>습도${weather.current?.relative_humidity_2m||0}%</span><span>|</span><span>미세먼지 ${todayDust}</span>`;
-            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>${Math.round(weather.daily?.temperature_2m_max?.[1]||0)}°/${Math.round(weather.daily?.temperature_2m_min?.[1]||0)}°</span><span>|</span><span>${tomorrowRain}</span><span>|</span><span>습도${Math.round(weather.daily?.relative_humidity_2m_mean?.[1]||0)}%</span><span>|</span><span>미세먼지 ${tomorrowDust}</span>`;
+            todayEl.innerHTML = `<span>${todayStr}</span><span>${Math.round(weather.current?.temperature_2m||0)}°C</span><span>${todayRain}</span><span>습도${weather.current?.relative_humidity_2m||0}%</span><span>미세먼지 ${todayDust}</span>`;
+            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>${Math.round(weather.daily?.temperature_2m_max?.[1]||0)}°/${Math.round(weather.daily?.temperature_2m_min?.[1]||0)}°</span><span>${tomorrowRain}</span><span>습도${Math.round(weather.daily?.relative_humidity_2m_mean?.[1]||0)}%</span><span>미세먼지 ${tomorrowDust}</span>`;
         }).catch(() => {
-            todayEl.innerHTML = `<span>${todayStr}</span><span>|</span><span>날씨 정보 없음</span>`;
-            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>|</span><span>날씨 정보 없음</span>`;
+            todayEl.innerHTML = `<span>${todayStr}</span><span>날씨 정보 없음</span>`;
+            tomorrowEl.innerHTML = `<span>${tomorrowStr}</span><span>날씨 정보 없음</span>`;
         });
     }
 

@@ -292,6 +292,7 @@
         if (user) {
             state.user = user;
             state.isGuest = false;
+            elements.appHeader.style.display = 'block';
             elements.loginScreen.style.display = 'none';
             elements.appMain.style.display = 'block';
             elements.guestBanner.style.display = 'none';
@@ -302,6 +303,7 @@
         } else if (!state.isGuest) {
             state.user = null;
             state.data = {};
+            elements.appHeader.style.display = 'none';
             elements.loginScreen.style.display = 'flex';
             elements.appMain.style.display = 'none';
         }
@@ -311,6 +313,7 @@
     async function enterGuestMode() {
         state.isGuest = true;
         state.user = null;
+        elements.appHeader.style.display = 'block';
         elements.loginScreen.style.display = 'none';
         elements.appMain.style.display = 'block';
         elements.guestBanner.style.display = 'flex';

@@ -1375,6 +1375,13 @@
     // ===== Event Listeners =====
     function initEventListeners() {
         elements.appHeader.addEventListener('click', goHome);
+
+        // 성경구절 클릭시 다른 구절로 변경
+        const bibleVerseBanner = document.querySelector('.bible-verse-banner');
+        if (bibleVerseBanner) {
+            bibleVerseBanner.addEventListener('click', displayRandomBibleVerse);
+        }
+
         elements.btnGoogleLogin.addEventListener('click', loginWithGoogle);
         elements.btnGuestLogin.addEventListener('click', enterGuestMode);
         elements.btnGuestToLogin.addEventListener('click', () => {

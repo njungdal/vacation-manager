@@ -51,21 +51,50 @@
     --font-family: 'Nanum Gothic', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
 }
 
-/* Dark Mode */
+/* Dark Mode - Night Sky Theme */
 [data-theme="dark"] {
-    --primary-color: #03C75A;
-    --primary-dark: #02B350;
-    --primary-light: #1A3D1F;
+    --primary-color: #5c9eff;
+    --primary-dark: #4285f4;
+    --primary-light: rgba(92, 158, 255, 0.2);
     --primary-text: #FFFFFF;
-    --secondary-color: #1A1A1A;
-    --background-color: #121212;
-    --surface-color: #1E1E1E;
-    --surface-secondary: #2D2D2D;
+    --secondary-color: #1b263b;
+    --background-color: #0d1b2a;
+    --surface-color: #1b263b;
+    --surface-secondary: #2d3a4a;
     --text-primary: #FFFFFF;
-    --text-secondary: #B3B3B3;
-    --text-light: #808080;
-    --border-color: #404040;
-    --shadow-color: rgba(0, 0, 0, 0.3);
+    --text-secondary: rgba(255, 255, 255, 0.75);
+    --text-light: rgba(255, 255, 255, 0.5);
+    --border-color: rgba(255, 255, 255, 0.15);
+    --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .app-header {
+    background: linear-gradient(135deg, #1b263b 0%, #2d3a4a 100%);
+}
+
+[data-theme="dark"] .bible-verse-banner {
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .bible-verse,
+[data-theme="dark"] .bible-reference {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] .channel-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .calendar-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .modal {
+    background: rgba(27, 38, 59, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 html, body {
@@ -163,7 +192,18 @@ html, body {
     padding: var(--spacing-lg) var(--spacing-md);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-md);
-    border-left: 4px solid #FFC107;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bible-verse-banner:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bible-verse-banner:active {
+    transform: scale(0.99);
 }
 
 .bible-verse {
@@ -1256,7 +1296,8 @@ html, body {
 .theme-toggle {
     position: fixed;
     bottom: var(--spacing-lg);
-    right: var(--spacing-lg);
+    left: 50%;
+    transform: translateX(-50%);
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -1273,12 +1314,12 @@ html, body {
 }
 
 .theme-toggle:hover {
-    transform: scale(1.1);
+    transform: translateX(-50%) scale(1.1);
     box-shadow: 0 6px 16px var(--shadow-color);
 }
 
 .theme-toggle:active {
-    transform: scale(0.95);
+    transform: translateX(-50%) scale(0.95);
 }
 
 /* Google Sheets Icon */

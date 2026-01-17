@@ -6,33 +6,33 @@
 }
 
 :root {
-    /* Night Sky Theme */
-    --primary-color: #5c9eff;
-    --primary-dark: #4285f4;
-    --primary-light: rgba(92, 158, 255, 0.2);
+    /* Naver-style Light Theme */
+    --primary-color: #03C75A;
+    --primary-dark: #02B350;
+    --primary-light: #E8F5E9;
     --primary-text: #FFFFFF;
-    --secondary-color: #1b263b;
-    --background-color: #0d1b2a;
-    --surface-color: rgba(255, 255, 255, 0.08);
-    --surface-secondary: #1b263b;
-    --text-primary: #FFFFFF;
-    --text-secondary: rgba(255, 255, 255, 0.75);
-    --text-light: rgba(255, 255, 255, 0.5);
-    --success-color: #4ade80;
-    --warning-color: #fbbf24;
-    --danger-color: #f87171;
-    --border-color: rgba(255, 255, 255, 0.15);
-    --shadow-color: rgba(0, 0, 0, 0.3);
+    --secondary-color: #f5f6f8;
+    --background-color: #FFFFFF;
+    --surface-color: #FFFFFF;
+    --surface-secondary: #F5F6F8;
+    --text-primary: #1A1A1A;
+    --text-secondary: #666666;
+    --text-light: #999999;
+    --success-color: #03C75A;
+    --warning-color: #FF9800;
+    --danger-color: #FF5252;
+    --border-color: #E5E5E5;
+    --shadow-color: rgba(0, 0, 0, 0.08);
 
-    /* Category colors for calendar (brighter for dark bg) */
-    --color-study: #a78bfa;
-    --color-game: #fb923c;
-    --color-reading: #4ade80;
-    --color-kindness: #f472b6;
-    --color-exercise: #34d399;
-    --color-phone: #22d3ee;
-    --color-special: #f87171;
-    --color-schedule: #60a5fa;
+    /* Category colors for calendar */
+    --color-study: #9C27B0;
+    --color-game: #FF9800;
+    --color-reading: #4CAF50;
+    --color-kindness: #E91E63;
+    --color-exercise: #00BCD4;
+    --color-phone: #2196F3;
+    --color-special: #F44336;
+    --color-schedule: #3F51B5;
 
     /* Spacing */
     --spacing-xs: 4px;
@@ -51,21 +51,21 @@
     --font-family: 'Nanum Gothic', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
 }
 
-/* Dark Mode - same as default now */
+/* Dark Mode */
 [data-theme="dark"] {
-    --primary-color: #5c9eff;
-    --primary-dark: #4285f4;
-    --primary-light: rgba(92, 158, 255, 0.2);
+    --primary-color: #03C75A;
+    --primary-dark: #02B350;
+    --primary-light: #1A3D1F;
     --primary-text: #FFFFFF;
-    --secondary-color: #0d1b2a;
-    --background-color: #050d15;
-    --surface-color: rgba(255, 255, 255, 0.05);
-    --surface-secondary: #0d1b2a;
+    --secondary-color: #1A1A1A;
+    --background-color: #121212;
+    --surface-color: #1E1E1E;
+    --surface-secondary: #2D2D2D;
     --text-primary: #FFFFFF;
-    --text-secondary: rgba(255, 255, 255, 0.7);
-    --text-light: rgba(255, 255, 255, 0.4);
-    --border-color: rgba(255, 255, 255, 0.1);
-    --shadow-color: rgba(0, 0, 0, 0.5);
+    --text-secondary: #B3B3B3;
+    --text-light: #808080;
+    --border-color: #404040;
+    --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 html, body {
@@ -74,8 +74,7 @@ html, body {
     font-size: 16px;
     line-height: 1.5;
     color: var(--text-primary);
-    background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 50%, #2d3a4a 100%);
-    background-attachment: fixed;
+    background-color: var(--background-color);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -85,18 +84,16 @@ html, body {
     max-width: 500px;
     margin: 0 auto;
     min-height: 100vh;
-    background: transparent;
+    background-color: var(--surface-color);
     display: flex;
     flex-direction: column;
     position: relative;
+    box-shadow: 0 0 20px var(--shadow-color);
 }
 
-/* Header - Night Sky style */
+/* Header - Naver style */
 .app-header {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--primary-color);
     padding: var(--spacing-lg) var(--spacing-lg);
     position: sticky;
     top: 0;
@@ -145,40 +142,28 @@ html, body {
     }
 }
 
-/* Welcome Message - Glass style */
+/* Welcome Message */
 .welcome-message {
-    background: rgba(92, 158, 255, 0.15);
-    border: 1px solid rgba(92, 158, 255, 0.3);
+    background-color: var(--primary-light);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-md);
     text-align: center;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
 }
 
 .welcome-message p {
-    color: var(--primary-text);
+    color: var(--primary-dark);
     font-size: 1rem;
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Bible Verse Banner - Night Sky */
+/* Bible Verse Banner */
 .bible-verse-banner {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
     padding: var(--spacing-lg) var(--spacing-md);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-md);
-}
-
-.bible-verse-banner .bible-verse,
-.bible-verse-banner .bible-reference {
-    color: rgba(255, 255, 255, 0.9) !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border-left: 4px solid #FFC107;
 }
 
 .bible-verse {
@@ -186,6 +171,7 @@ html, body {
     font-size: 1.05rem;
     font-weight: 400;
     line-height: 1.7;
+    color: #5D4037;
     margin-bottom: var(--spacing-sm);
     word-break: keep-all;
 }
@@ -194,21 +180,20 @@ html, body {
     font-family: 'Nanum Myeongjo', serif;
     font-size: 0.85rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: #8D6E63;
 }
 
-/* Weather Banner - Night Sky */
+/* Weather Banner */
 .weather-banner {
     display: flex;
     flex-direction: column;
     gap: 2px;
     padding: var(--spacing-sm) var(--spacing-xs);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-secondary);
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -216,7 +201,7 @@ html, body {
 }
 
 .weather-banner:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: var(--border-color);
 }
 
 .weather-row {
@@ -235,7 +220,7 @@ html, body {
     color: var(--border-color);
 }
 
-/* Channel List - Glass style */
+/* Channel List */
 .channel-list, .sub-channel-list {
     display: flex;
     flex-direction: column;
@@ -247,20 +232,19 @@ html, body {
     align-items: center;
     width: 100%;
     padding: var(--spacing-md) var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .channel-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    border-color: var(--primary-color);
 }
 
 .channel-btn:active {
@@ -279,7 +263,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background-color: var(--primary-light);
     border-radius: var(--radius-sm);
 }
 
@@ -287,11 +271,11 @@ html, body {
     flex: 1;
     font-size: 1rem;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .channel-arrow {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-light);
     font-size: 1.2rem;
     font-weight: 400;
 }
@@ -307,7 +291,7 @@ html, body {
 .back-btn {
     background: none;
     border: none;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
@@ -318,7 +302,7 @@ html, body {
 }
 
 .back-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-secondary);
 }
 
 .screen-title {
@@ -331,9 +315,9 @@ html, body {
 
 /* Download Button */
 .btn-download {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
+    background: var(--surface-secondary);
+    border: none;
+    color: var(--text-primary);
     font-size: 1.1rem;
     cursor: pointer;
     padding: var(--spacing-sm) var(--spacing-md);
@@ -345,22 +329,21 @@ html, body {
 }
 
 .btn-download:hover {
-    background: rgba(92, 158, 255, 0.3);
-    border-color: rgba(92, 158, 255, 0.5);
+    background-color: var(--primary-color);
+    color: var(--primary-text);
 }
 
 .btn-download:active {
     transform: scale(0.95);
 }
 
-/* Calendar Container - Glass style */
+/* Calendar Container */
 .calendar-container {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: var(--spacing-md);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px var(--shadow-color);
     overflow-x: hidden;
     max-width: 100%;
 }
@@ -373,7 +356,7 @@ html, body {
 }
 
 .calendar-month {
-    background: rgba(255, 255, 255, 0.05);
+    background-color: var(--surface-secondary);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
 }
@@ -387,9 +370,9 @@ html, body {
 }
 
 .calendar-nav-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background-color: var(--surface-secondary);
+    border: none;
+    color: var(--text-primary);
     font-size: 1.3rem;
     cursor: pointer;
     padding: var(--spacing-sm) var(--spacing-md);
@@ -399,19 +382,20 @@ html, body {
 }
 
 .calendar-nav-btn:hover {
-    background: rgba(92, 158, 255, 0.3);
+    background-color: var(--primary-light);
+    color: var(--primary-color);
 }
 
 .calendar-nav-btn:disabled {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.3);
+    background-color: var(--surface-secondary);
+    color: var(--text-light);
     cursor: not-allowed;
 }
 
 .calendar-month-year {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .calendar-weekdays {
@@ -452,8 +436,8 @@ html, body {
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.2s ease;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: var(--surface-secondary);
+    border: 2px solid transparent;
     overflow: hidden;
     min-width: 0;
 }
@@ -465,8 +449,8 @@ html, body {
 }
 
 .calendar-day:hover {
-    background: rgba(92, 158, 255, 0.15);
-    border-color: rgba(92, 158, 255, 0.4);
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
 }
 
 .calendar-day:active {
@@ -486,21 +470,21 @@ html, body {
 }
 
 .calendar-day.today {
-    background: linear-gradient(135deg, rgba(92, 158, 255, 0.4), rgba(66, 133, 244, 0.5));
-    border-color: rgba(92, 158, 255, 0.6);
+    background-color: var(--primary-color);
+    border-color: var(--primary-dark);
 }
 
 .calendar-day.today:hover {
-    background: linear-gradient(135deg, rgba(92, 158, 255, 0.5), rgba(66, 133, 244, 0.6));
+    background-color: var(--primary-dark);
 }
 
 .calendar-day.has-entry {
-    background: rgba(74, 222, 128, 0.15);
-    border-color: rgba(74, 222, 128, 0.3);
+    background-color: var(--primary-light);
+    border-color: rgba(3, 199, 90, 0.3);
 }
 
 .calendar-day.has-entry.today {
-    background: linear-gradient(135deg, rgba(92, 158, 255, 0.4), rgba(66, 133, 244, 0.5));
+    background-color: var(--primary-color);
 }
 
 .calendar-day.sunday .day-number {
@@ -570,14 +554,14 @@ html, body {
     color: var(--primary-text);
 }
 
-/* Modal Styles - Night Sky Glass */
+/* Modal Styles - iOS style */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.4);
     display: none;
     align-items: flex-end;
     justify-content: center;
@@ -589,10 +573,7 @@ html, body {
 }
 
 .modal {
-    background: rgba(27, 38, 59, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-color);
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     width: 100%;
     max-width: 500px;
@@ -627,10 +608,10 @@ html, body {
 }
 
 .modal-close {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-secondary);
     border: none;
     font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     cursor: pointer;
     padding: var(--spacing-sm);
     border-radius: 50%;
@@ -669,7 +650,7 @@ html, body {
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.08);
+    background-color: var(--surface-secondary);
     border-radius: var(--radius-sm);
     margin-bottom: var(--spacing-sm);
     border-left: 4px solid var(--primary-color);
@@ -715,20 +696,20 @@ html, body {
 .form-input, .form-textarea {
     width: 100%;
     padding: var(--spacing-md);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-size: 1rem;
     font-family: var(--font-family);
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    background-color: var(--surface-secondary);
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .form-input:focus, .form-textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 0 3px rgba(92, 158, 255, 0.2);
+    background-color: var(--surface-color);
+    box-shadow: 0 0 0 3px rgba(3, 199, 90, 0.15);
 }
 
 .form-input::placeholder, .form-textarea::placeholder {
@@ -758,19 +739,17 @@ html, body {
 }
 
 .btn-save {
-    background: linear-gradient(135deg, #5c9eff 0%, #4285f4 100%);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(92, 158, 255, 0.3);
+    background-color: var(--primary-color);
+    color: var(--primary-text);
 }
 
 .btn-save:hover {
-    background: linear-gradient(135deg, #6aa8ff 0%, #5c9eff 100%);
+    background-color: var(--primary-dark);
 }
 
 .btn-delete {
-    background: rgba(248, 113, 113, 0.15);
+    background-color: var(--surface-secondary);
     color: var(--danger-color);
-    border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 .btn-delete:hover {
@@ -779,12 +758,12 @@ html, body {
 }
 
 .btn-cancel {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
+    background-color: var(--surface-secondary);
+    color: var(--text-secondary);
 }
 
 .btn-cancel:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background-color: var(--border-color);
 }
 
 /* Legend for calendar */
@@ -793,8 +772,7 @@ html, body {
     flex-wrap: wrap;
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: var(--surface-secondary);
     border-radius: var(--radius-sm);
     margin-top: var(--spacing-md);
 }
@@ -1009,22 +987,22 @@ html, body {
 @media (hover: none) {
     .channel-btn:hover {
         transform: none;
-        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 2px 8px var(--shadow-color);
     }
 
     .channel-btn:active {
-        background: rgba(255, 255, 255, 0.12);
+        background-color: var(--surface-secondary);
         transform: scale(0.98);
     }
 
     .calendar-day:hover {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(255, 255, 255, 0.08);
+        background-color: var(--surface-secondary);
+        border-color: transparent;
     }
 
     .calendar-day:active {
         transform: scale(0.95);
-        background: rgba(92, 158, 255, 0.15);
+        background-color: var(--primary-light);
     }
 }
 
@@ -1129,18 +1107,16 @@ html, body {
     padding: 2px;
 }
 
-/* User Bar - Glass style */
+/* User Bar - Card style */
 .user-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-color);
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .user-info {
@@ -1164,32 +1140,29 @@ html, body {
 
 .btn-logout {
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: var(--surface-secondary);
+    border: none;
     border-radius: var(--radius-sm);
     font-size: 0.8rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .btn-logout:hover {
     background-color: var(--danger-color);
-    border-color: var(--danger-color);
     color: white;
 }
 
-/* Loading Overlay - Night Sky */
+/* Loading Overlay */
 .loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(13, 27, 42, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
     display: none;
     flex-direction: column;
     align-items: center;
@@ -1204,7 +1177,7 @@ html, body {
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.2);
+    border: 4px solid var(--border-color);
     border-top-color: var(--primary-color);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -1217,7 +1190,7 @@ html, body {
 
 .loading-overlay p {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -1286,9 +1259,9 @@ html, body {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -1296,14 +1269,11 @@ html, body {
     font-size: 1.3rem;
     transition: all 0.2s ease;
     z-index: 999;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
 }
 
 .theme-toggle:hover {
     transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 16px var(--shadow-color);
 }
 
 .theme-toggle:active {
@@ -1329,7 +1299,7 @@ html, body {
     align-items: center;
     padding: var(--spacing-lg);
     text-align: center;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--text-secondary);
 }
 
 .login-required-notice p {
@@ -1338,18 +1308,17 @@ html, body {
 
 .btn-login-from-modal {
     padding: var(--spacing-sm) var(--spacing-lg);
-    background: linear-gradient(135deg, #5c9eff 0%, #4285f4 100%);
-    color: #ffffff;
+    background-color: var(--primary-color);
+    color: var(--primary-text);
     border: none;
     border-radius: var(--radius-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(92, 158, 255, 0.3);
 }
 
 .btn-login-from-modal:hover {
-    background: linear-gradient(135deg, #6aa8ff 0%, #5c9eff 100%);
+    background-color: var(--primary-dark);
 }
 
 /* ===== iPad / Tablet Styles ===== */

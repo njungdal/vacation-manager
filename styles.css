@@ -328,11 +328,25 @@ html, body {
     border-radius: var(--radius-sm);
 }
 
-.channel-name {
+.channel-text {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.channel-name {
     font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.channel-name-en {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.2px;
 }
 
 .channel-arrow {
@@ -881,6 +895,10 @@ html, body {
         font-size: 0.95rem;
     }
 
+    .channel-name-en {
+        font-size: 0.7rem;
+    }
+
     .calendar-day {
         min-height: 52px;
     }
@@ -961,6 +979,10 @@ html, body {
 
     .channel-name {
         font-size: 0.85rem;
+    }
+
+    .channel-name-en {
+        font-size: 0.65rem;
     }
 
     .user-bar {
@@ -1429,6 +1451,10 @@ html, body {
 
     .channel-name {
         font-size: 1.1rem;
+    }
+
+    .channel-name-en {
+        font-size: 0.8rem;
     }
 
     /* Welcome & Bible Verse */

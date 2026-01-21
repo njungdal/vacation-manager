@@ -147,6 +147,14 @@ html, body {
     letter-spacing: -0.5px;
 }
 
+.app-subtitle {
+    color: var(--secondary-text);
+    font-size: 0.75rem;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 2px;
+}
+
 /* Main Content */
 .app-main {
     flex: 1;

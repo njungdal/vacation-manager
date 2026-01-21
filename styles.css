@@ -82,6 +82,10 @@
     color: rgba(255, 255, 255, 0.9) !important;
 }
 
+[data-theme="dark"] .bible-verse-banner .bible-verse-niv {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
 [data-theme="dark"] .channel-btn {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.1);
@@ -211,8 +215,18 @@ html, body {
     font-weight: 400;
     line-height: 1.7;
     color: #1A1A1A !important;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
     word-break: keep-all;
+}
+
+.bible-verse-banner .bible-verse-niv {
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #4A4A4A !important;
+    margin-bottom: var(--spacing-sm);
 }
 
 .bible-verse-banner .bible-reference {
@@ -1426,6 +1440,10 @@ html, body {
         font-size: 1.2rem;
     }
 
+    .bible-verse-niv {
+        font-size: 1rem;
+    }
+
     .bible-reference {
         font-size: 0.95rem;
     }
@@ -1679,6 +1697,10 @@ html, body {
 
     .bible-verse {
         font-size: 1.05rem;
+    }
+
+    .bible-verse-niv {
+        font-size: 0.85rem;
     }
 
     .channel-btn {
